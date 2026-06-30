@@ -217,8 +217,13 @@ auth.onAuthStateChanged(user => {
 async function login(){
   const email = document.getElementById('email').value;
   const pass = document.getElementById('password').value;
-  document.getElementById('loginError').textContent = '';
-  try{await auth.signInWithEmailAndPassword(email, pass);}catch(e){document.getElementById('loginError').textContent = e.message;}
+  document.getElementById('loginError').textContent = 'Logging in...'; // <-- add this
+  try{
+    await auth.signInWithEmailAndPassword(email, pass);
+  }catch(e){
+    document.getElementById('loginError').textContent = e.code + ': ' + e.message; // <-- will now show the real error
+    alert(e.code); // <-- popup the error code too
+  }
 }
 async function logout(){await auth.signOut();}
 
