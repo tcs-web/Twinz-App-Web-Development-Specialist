@@ -70,13 +70,17 @@ input:checked +.slider:before{transform:translateX(24px)}
 </head>
 <body>
 
+<script>
+alert('JS is running'); // If this doesn't pop up, GitHub is still serving old cache
+</script>  
+  
 <!-- LOGIN SCREEN -->
 <div id="loginScreen" class="card">
   <h1><img src="https://files.catbox.moe/0zympr.jpeg" class="logo"> Twinz Admin</h1>
   <div class="sub">Login to access GOD TIER backend</div>
   <input type="email" id="email" placeholder="twinz.cooperate.services@gmail.com">
   <input type="password" id="password" placeholder="Password">
-  <button class="btn-green" onclick="login()">Login</button>
+  <button id="loginBtn" class="btn-green" onclick="login()">Login</button>
   <button class="btn-gray" onclick="logout()" style="margin-top:8px">Logout</button>
   <div id="loginError" style="color:#dc2626;margin-top:8px;font-size:13px"></div>
 </div>
@@ -90,12 +94,12 @@ input:checked +.slider:before{transform:translateX(24px)}
   <div class="sub">IT Solutions & Web Development | VAT: 9819040198</div>
 
   <div class="tabs">
-    <div class="tab active" onclick="showTab('dashboard')">Dashboard</div>
-    <div class="tab" onclick="showTab('new')">New Invoice</div>
-    <div class="tab" onclick="showTab('recurring')">Recurring</div>
-    <div class="tab" onclick="showTab('clients')">Client Cloud</div>
-    <div class="tab" onclick="showTab('list')">Invoices</div>
-    <div class="tab" onclick="showTab('reports')">Reports</div>
+  <div class="tab active" onclick="showTab('dashboard', event)">Dashboard</div>
+<div class="tab" onclick="showTab('new', event)">New Invoice</div>
+<div class="tab" onclick="showTab('recurring', event)">Recurring</div>
+<div class="tab" onclick="showTab('clients', event)">Client Cloud</div>
+<div class="tab" onclick="showTab('list', event)">Invoices</div>
+<div class="tab" onclick="showTab('reports', event)">Reports</div>
   </div>
 
   <!-- DASHBOARD -->
@@ -216,6 +220,7 @@ auth.onAuthStateChanged(user => {
 });
 
 async function login(){
+  alert('Login clicked'); // <-- add this
   const email = document.getElementById('email').value;
   const pass = document.getElementById('password').value;
   document.getElementById('loginError').textContent = 'Logging in...'; // <-- add this
@@ -256,11 +261,11 @@ function initApp(){
   db.collection('twinz_recurring').onSnapshot(snap=>{recurring = snap.docs.map(d=>({id:d.id,...d.data()})); loadRecurring();});
 }
 
-function showTab(tab){
-  document.querySelectorAll('#appScreen.card').forEach(c=>c.classList.add('hidden'));
+function showTab(tab, e){ // <-- add 'e'
+  document.querySelectorAll('#appScreen > .card').forEach(c=>c.classList.add('hidden')); // <-- add '>'
   document.getElementById(tab).classList.remove('hidden');
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  event.target.classList.add('active');
+  if(e) e.target.classList.add('active'); // <-- add 'if(e)'
   if(tab==='clients') loadClients();
   if(tab==='list') loadInvoices();
   if(tab==='recurring') loadRecurring();
