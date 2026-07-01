@@ -223,15 +223,15 @@ auth.onAuthStateChanged(user => {
 });
 
 async function login(){
-  alert('Login clicked'); // <-- add this
+  alert('Login clicked'); // <-- this will now actually show
   const email = document.getElementById('email').value;
   const pass = document.getElementById('password').value;
-  document.getElementById('loginError').textContent = e.code + ': ' + e.message; // <-- BUG HERE
+  document.getElementById('loginError').textContent = 'Logging in...'; // <-- FIXED
   try{
     await auth.signInWithEmailAndPassword(email, pass);
   }catch(e){
-    document.getElementById('loginError').textContent = e.code + ': ' + e.message; // <-- will now show the real error
-    alert(e.code); // <-- popup the error code too
+    document.getElementById('loginError').textContent = e.code + ': ' + e.message; // <-- 'e' is only used HERE
+    alert(e.code); 
   }
 }
 async function logout(){await auth.signOut();}
