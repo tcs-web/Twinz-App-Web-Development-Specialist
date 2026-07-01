@@ -223,15 +223,17 @@ auth.onAuthStateChanged(user => {
 });
 
 async function login(){
-  alert('Login clicked'); // <-- this will now actually show
-  const email = document.getElementById('email').value;
+  alert('Login clicked V16'); // 1. This should pop
+  const email = document.getElementById('email').value.trim();
   const pass = document.getElementById('password').value;
-  document.getElementById('loginError').textContent = 'Logging in...'; // <-- FIXED
+  alert('Email: ' + email); // 2. This will show what you typed
+  document.getElementById('loginError').textContent = 'Logging in...'; 
   try{
     await auth.signInWithEmailAndPassword(email, pass);
+    alert('Firebase Success!'); // 3. If you see this, login worked
   }catch(e){
-    document.getElementById('loginError').textContent = e.code + ': ' + e.message; // <-- 'e' is only used HERE
-    alert(e.code); 
+    alert('Firebase Error: ' + e.code); // 4. This is the one we need
+    document.getElementById('loginError').textContent = e.code + ': ' + e.message; 
   }
 }
 async function logout(){await auth.signOut();}
