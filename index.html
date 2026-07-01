@@ -1,153 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Twinz Cooperate - GOD TIER v3.0.0</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
-body{background:#0a0a0a;color:#f1f5f9;padding:16px;max-width:1000px;margin:0 auto}
-.card{background:#111827;border-radius:18px;padding:22px;margin-bottom:18px;border:1px solid #1f2937;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
-h1{font-size:26px;margin-bottom:6px;color:#3b82f6;display:flex;align-items:center;gap:12px}
-h2{font-size:18px;margin-bottom:14px;color:#e5e7eb}
-.logo{width:48px;height:48px;border-radius:12px;object-fit:cover;border:2px solid #3b82f6}
-.sub{color:#9ca3af;font-size:13px;margin-bottom:18px}
-input,textarea,select{width:100%;padding:13px;border-radius:10px;border:1px solid #374151;background:#0a0a0a;color:#f1f5f9;margin-bottom:11px;font-size:16px}
-button{background:#2563eb;color:white;border:none;padding:15px 22px;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;width:100%;touch-action: manipulation;}
-button:active{transform:scale(0.97);background:#1d4ed8}
-.btn-green{background:#16a34a}.btn-red{background:#dc2626}.btn-yellow{background:#ca8a04}.btn-purple{background:#7c3aed}.btn-blue{background:#0ea5e9}.btn-cyan{background:#06b6d4}.btn-gray{background:#4b5563}
-.grid{display:grid;grid-template-columns:2fr 1fr;gap:12px}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.inv-row{display:flex;justify-content:space-between;align-items:center;padding:14px;background:#0a0a0a;border-radius:10px;margin-bottom:10px;border-left:4px solid #2563eb}
-.client-folder{background:#0f172a;border:1px solid #334155;border-radius:12px;padding:14px;margin-bottom:12px}
-.client-folder h3{color:#3b82f6;margin-bottom:8px;font-size:16px}
-.link-box{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
-.link-box a{flex:1;min-width:120px;background:#1e293b;padding:10px;border-radius:8px;text-decoration:none;color:#60a5fa;font-size:13px;text-align:center;border:1px solid #334155}
-.file-item{display:flex;justify-content:space-between;align-items:center;background:#1e293b;padding:10px;border-radius:8px;margin-bottom:6px;border:1px solid #334155;font-size:13px}
-.file-item a{color:#60a5fa;text-decoration:none}
-.file-type{padding:3px 8px;border-radius:6px;background:#1e3a8a;font-size:11px;font-weight:700}
-.status-paid{border-left-color:#16a34a}
-.status-pending{border-left-color:#ca8a04}
-.tabs{display:flex;gap:8px;margin-bottom:18px;overflow-x:auto}
-.tab{flex:1;min-width:110px;padding:11px;text-align:center;background:#1f2937;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px;touch-action: manipulation;}
-.tab.active{background:#2563eb}
-.hidden{display:none}
-.total-box{background:#1e3a8a;padding:16px;border-radius:12px;margin-top:12px}
-.stat-card{background:linear-gradient(135deg,#1e3a8a,#1e40af);padding:20px;border-radius:14px;text-align:center}
-.stat-num{font-size:32px;font-weight:800;color:#60a5fa}
-.portal-link{background:#0a0a0a;padding:12px;border-radius:8px;border:1px dashed #3b82f6;margin:10px 0;word-break:break-all;font-size:13px}
-.client-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-.client-actions button{padding:8px 12px;font-size:13px;width:auto}
-.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:999}
-.modal.active{display:flex}
-.modal-card{background:#111827;padding:24px;border-radius:16px;max-width:420px;width:90%;max-height:90vh;overflow-y:auto}
-.label{font-size:12px;color:#9ca3af;margin-bottom:4px;margin-top:8px}
-.upload-progress{height:4px;background:#1e293b;border-radius:2px;margin-top:6px;overflow:hidden}
-.upload-bar{height:100%;background:#16a34a;width:0%;transition:width 0.3s}
-.toggle{display:flex;align-items:center;gap:10px;margin:12px 0;padding:12px;background:#0f172a;border-radius:10px;border:1px solid #334155}
-.switch{position:relative;display:inline-block;width:50px;height:26px}
-.switch input{opacity:0;width:0;height:0}
-.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#374151;transition:.4s;border-radius:26px}
-.slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background:white;transition:.4s;border-radius:50%}
-input:checked +.slider{background:#16a34a}
-input:checked +.slider:before{transform:translateX(24px)}
-.filter-bar{display:flex;gap:8px;margin-bottom:12px}
-.filter-bar input{flex:1}
-.filter-bar select{width:140px}
-@media(max-width:650px){.grid,.grid-3{grid-template-columns:1fr}}
-.logout-btn{background:#dc2626;width:auto;padding:10px 16px;font-size:13px;margin-left:auto}
-.top-bar{display:flex;align-items:center;margin-bottom:18px}
-</style>
-</head>
-<body>
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-<!-- LOGIN -->
-<div id="loginScreen" class="card">
-  <h1><img src="https://files.catbox.moe/0zympr.jpeg" class="logo"> Twinz Admin</h1>
-  <div class="sub">Login to access GOD TIER backend</div>
-  <input type="email" id="email" placeholder="twinz.cooperate.services@gmail.com" autocomplete="email">
-  <input type="password" id="password" placeholder="Password" autocomplete="current-password">
-  <button id="loginBtn" class="btn-green">Login</button>
-  <div id="loginError" style="color:#dc2626;margin-top:8px;font-size:13px"></div>
-</div>
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBJP71gaIqvJi2QZSJBIWEMMzda2jhcpW8",
+  authDomain: "twinz-app-and-web-specialist.firebaseapp.com",
+  projectId: "twinz-app-and-web-specialist",
+  storageBucket: "twinz-app-and-web-specialist.firebasestorage.app",
+  messagingSenderId: "457882091771",
+  appId: "1:457882091771:web:9e6b54ca264c6c2803f05e",
+  measurementId: "G-ZPQK3M6TDR"
+};
 
-<!-- APP -->
-<div id="appScreen" class="hidden">
-  <div class="top-bar">
-    <h1><img src="https://files.catbox.moe/0zympr.jpeg" class="logo"> Twinz App & Web Specialist</h1>
-    <button id="logoutBtn" class="logout-btn">Logout</button>
-  </div>
-  <div class="sub">IT Solutions & Web Development | VAT: 9819040198</div>
-
-  <div class="tabs">
-    <div class="tab active" data-tab="dashboard">Dashboard</div>
-    <div class="tab" data-tab="new">New Invoice</div>
-    <div class="tab" data-tab="recurring">Recurring</div>
-    <div class="tab" data-tab="clients">Client Cloud</div>
-    <div class="tab" data-tab="list">Invoices</div>
-    <div class="tab" data-tab="reports">Reports</div>
-  </div>
-
-  <div id="dashboard" class="card"><h2>Command Center</h2><div class="grid-3"><div class="stat-card"><div class="stat-num" id="statTotal">R0</div><div>Total Revenue</div></div><div class="stat-card"><div class="stat-num" id="statOutstanding">R0</div><div>Outstanding</div></div><div class="stat-card"><div class="stat-num" id="statClients">0</div><div>Active Clients</div></div></div></div>
-
-  <div id="new" class="card hidden"><h2>Create Invoice</h2><select id="clientSelect"><option value="">Select Client...</option></select><button class="btn-yellow" id="addClientBtn">+ Add Client</button><div class="label">Client Email</div><input id="clientEmail"><div class="label">Client Address</div><textarea id="clientAddress" rows="2"></textarea><div class="toggle"><label class="switch"><input type="checkbox" id="vatToggle" checked><span class="slider"></span></label><span>Tax Invoice + VAT 15%</span></div><div id="items"><div class="grid"><input placeholder="Service / Description" id="item0"><input type="number" placeholder="Amount R" id="price0"></div></div><button id="addItemBtn">+ Add Item</button><div class="label">Discount R</div><input type="number" id="discount" value="0"><div class="label">Notes</div><textarea id="notes" rows="2">Payment due within 7 days.</textarea><div class="total-box"><div style="display:flex;justify-content:space-between"><span>Subtotal:</span><span>R<span id="subtotal">0.00</span></span></div><div style="display:flex;justify-content:space-between;color:#fbbf24"><span>Discount:</span><span>-R<span id="discountShow">0.00</span></span></div><div id="vatRow" style="display:flex;justify-content:space-between"><span>VAT 15%:</span><span>R<span id="vat">0.00</span></span></div><div style="display:flex;justify-content:space-between;font-size:20px;font-weight:700"><span>TOTAL:</span><span>R<span id="total">0.00</span></span></div></div><button class="btn-green" id="generateBtn" style="margin-top:16px">Generate PDF + WhatsApp + Portal</button></div>
-
-  <div id="recurring" class="card hidden"><h2>Recurring</h2><select id="recClient"><option value="">Select Client...</option></select><input placeholder="Service" id="recService"><input type="number" placeholder="Amount R" id="recAmount"><input type="number" placeholder="Day 1-28" id="recDay" value="1"><button class="btn-purple" id="addRecBtn">Set Recurring</button><div id="recList"></div></div>
-
-  <div id="clients" class="card hidden"><h2>Client Cloud</h2><div id="clientList"></div></div>
-  <div id="list" class="card hidden"><h2>All Invoices</h2><div id="invoiceList"></div></div>
-  <div id="reports" class="card hidden"><h2>Reports</h2><canvas id="revenueChart" height="100"></canvas></div>
-
-  <div id="editModal" class="modal"><div class="modal-card" id="modalCard"><h2>Edit Client</h2><input id="editName"><input id="editWhatsapp"><input id="editEmail"><textarea id="editAddress" rows="2"></textarea><input id="editApp"><input id="editWebsite"><input type="file" id="fileUpload" multiple><div class="upload-progress"><div class="upload-bar" id="uploadBar"></div></div><button class="btn-cyan" id="uploadBtn">Upload</button><div class="filter-bar"><input id="fileSearch" placeholder="Search files..."><select id="fileFilter"><option value="all">All</option><option value="apk">APK</option><option value="zip">ZIP</option><option value="pdf">PDF</option><option value="psd">PSD</option><option value="jpg">Images</option></select></div><div id="fileList"></div><textarea id="editNotes" rows="3"></textarea><button class="btn-green" id="saveClientBtn">Save</button><button class="btn-red" id="deleteClientBtn">Delete</button><button class="btn-blue" id="closeModalBtn">Cancel</button></div></div>
-</div>
-
-<script>
-const firebaseConfig = {apiKey: "AIzaSyBJP71gaIqvJi2QZSJBIWEMMzda2jhcpW8", authDomain: "twinz-app-and-web-specialist.firebaseapp.com", projectId: "twinz-app-and-web-specialist", storageBucket: "twinz-app-and-web-specialist.firebasestorage.app", messagingSenderId: "457882091771", appId: "1:457882091771:web:9e6b54ca264c6c2803f05e"};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth(); const db = firebase.firestore(); const storage = firebase.storage();
-
-const loginBtn = document.getElementById('loginBtn'); const logoutBtn = document.getElementById('logoutBtn');
-auth.onAuthStateChanged(user => {if(user){loginScreen.classList.add('hidden'); appScreen.classList.remove('hidden'); initApp();} else {loginScreen.classList.remove('hidden'); appScreen.classList.add('hidden');}});
-
-loginBtn.addEventListener('click', async ()=>{const email=document.getElementById('email').value.trim(); const pass=document.getElementById('password').value; loginError.textContent='Logging in...'; try{await auth.signInWithEmailAndPassword(email, pass);}catch(e){loginError.textContent=e.code;}});
-logoutBtn.addEventListener('click', ()=>auth.signOut());
-
-let itemCount=1, clients=[], invoices=[], recurring=[], editingClientId=null, editingClientData=null;
-const COMPANY={name:'Twinz Cooperate Services Pty Ltd', address:'Office Burgersfort Praktiseer Ext 02', email:'twinz.cooperate.services@gmail.com', phone:'068 254 7352 / 069 894 9596', vat:'9819040198', reg:'2024/444303/07', bank:'Standard Bank', acc:'10 26 459 443 4', branch:'006145', logo:'https://files.catbox.moe/0zympr.jpeg'};
-
-function initApp(){db.collection('twinz_clients').onSnapshot(snap=>{clients=snap.docs.map(d=>({id:d.id,...d.data()})); loadClientSelect(); loadClients();}); db.collection('twinz_invoices').onSnapshot(snap=>{invoices=snap.docs.map(d=>({id:d.id,...d.data()})); loadInvoices(); updateDashboard();}); db.collection('twinz_recurring').onSnapshot(snap=>{recurring=snap.docs.map(d=>({id:d.id,...d.data()})); loadRecurring();});
-document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', e=>showTab(t.dataset.tab, e))); addItemBtn.addEventListener('click', addItem); vatToggle.addEventListener('change', calcTotal); discount.addEventListener('input', calcTotal); generateBtn.addEventListener('click', generateInvoice); addClientBtn.addEventListener('click', addClient); addRecBtn.addEventListener('click', addRecurring); uploadBtn.addEventListener('click', uploadFiles); saveClientBtn.addEventListener('click', saveClient); deleteClientBtn.addEventListener('click', deleteClient); closeModalBtn.addEventListener('click', closeModal); fileSearch.addEventListener('input', filterFiles); fileFilter.addEventListener('change', filterFiles); editModal.addEventListener('click', closeModal); modalCard.addEventListener('click', e=>e.stopPropagation());}
-
-function showTab(tab, e){document.querySelectorAll('#appScreen >.card').forEach(c=>c.classList.add('hidden')); document.getElementById(tab).classList.remove('hidden'); document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); e.target.classList.add('active'); if(tab==='clients') loadClients(); if(tab==='list') loadInvoices(); if(tab==='recurring') loadRecurring(); if(tab==='dashboard') updateDashboard(); if(tab==='reports') loadReports();}
-function addItem(){items.insertAdjacentHTML('beforeend', `<div class="grid"><input placeholder="Service" id="item${itemCount}"><input type="number" placeholder="R" id="price${itemCount}"></div>`); document.getElementById('price'+itemCount).addEventListener('input', calcTotal); itemCount++;}
-function calcTotal(){let subtotal=0; for(let i=0;i<itemCount;i++){subtotal+=parseFloat(document.getElementById('price'+i)?.value||0);} let discount=parseFloat(document.getElementById('discount').value||0); let after=Math.max(0,subtotal-discount); let vat=vatToggle.checked?after*0.15:0; vatRow.style.display=vatToggle.checked?'flex':'none'; subtotal.textContent=subtotal.toFixed(2); discountShow.textContent=discount.toFixed(2); vat.textContent=vat.toFixed(2); total.textContent=(after+vat).toFixed(2);}
-async function addClient(){let n=prompt('Name:'), w=prompt('WhatsApp +27:'), e=prompt('Email:'), a=prompt('Address:'); if(n&&w){await db.collection('twinz_clients').add({name:n,whatsapp:w,email:e,address:a,appLink:'',websiteLink:'',files:[],notes:'',portalId:Math.random().toString(36).substr(2,9)});}}
-function loadClientSelect(){clientSelect.innerHTML=recClient.innerHTML='<option value="">Select Client...</option>'; clients.forEach(c=>{clientSelect.innerHTML+=`<option value="${c.id}">${c.name}</option>`; recClient.innerHTML+=`<option value="${c.id}">${c.name}</option>`;}); clientSelect.onchange=()=>{let c=clients.find(x=>x.id==clientSelect.value); if(c){clientEmail.value=c.email||''; clientAddress.value=c.address||'';}};}
-function loadClients(){let html=''; clients.forEach(c=>{let url=location.origin+location.pathname+'?portal='+c.portalId; let files=c.files?.map(f=>`<div class="file-item"><a href="${f.url}" target="_blank"><span class="file-type">${f.name.split('.').pop().toUpperCase()}</span> ${f.name}</a><button class="btn-red" style="width:auto;padding:4px 8px;font-size:11px" data-del="${c.id}|${f.url}">X</button></div>`).join('')||''; html+=`<div class="client-folder"><h3>${c.name}</h3><div style="color:#9ca3af;font-size:13px">${c.whatsapp} | ${c.email}</div>${files?`<div style="margin:10px 0">${files}</div>`:''}<div class="portal-link">${url}</div><div class="client-actions"><button class="btn-blue" data-edit="${c.id}">Edit</button><button class="btn-cyan" data-copy="${url}">Copy</button></div></div>`;}); clientList.innerHTML=html||'<div class="sub">No clients</div>'; document.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>editClient(b.dataset.edit))); document.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{const[id,url]=b.dataset.del.split('|'); deleteFile(id,url);})); document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{navigator.clipboard.writeText(b.dataset.copy); alert('Copied!');}));}
-function editClient(id){editingClientId=id; editingClientData=clients.find(c=>c.id==id); editName.value=editingClientData.name; editWhatsapp.value=editingClientData.whatsapp; editEmail.value=editingClientData.email; editAddress.value=editingClientData.address; editApp.value=editingClientData.appLink; editWebsite.value=editingClientData.websiteLink; editNotes.value=editingClientData.notes; filterFiles(); editModal.classList.add('active');}
-function filterFiles(){if(!editingClientData)return; let s=fileSearch.value.toLowerCase(), f=fileFilter.value; let html=(editingClientData.files||[]).filter(x=>x.name.toLowerCase().includes(s)&&(f==='all'||x.name.split('.').pop().toLowerCase()===f)).map(x=>`<div class="file-item"><a href="${x.url}" target="_blank">${x.name}</a><button class="btn-red" style="width:auto;padding:4px 8px;font-size:11px" data-del="${editingClientId}|${x.url}">X</button></div>`).join(''); fileList.innerHTML=html||'No files'; document.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{const[id,url]=b.dataset.del.split('|'); deleteFile(id,url);}));}
-function closeModal(){editModal.classList.remove('active');}
-async function uploadFiles(){const files=fileUpload.files; if(!files.length)return alert('Select files'); let arr=editingClientData.files||[]; for(let i=0;i<files.length;i++){let ref=storage.ref(`files/${editingClientId}/${Date.now()}_${files[i].name}`); await ref.put(files[i]); arr.push({name:files[i].name,url:await ref.getDownloadURL()});} await db.collection('twinz_clients').doc(editingClientId).update({files:arr}); fileUpload.value=''; editClient(editingClientId);}
-async function deleteFile(cid,url){if(!confirm('Delete?'))return; let c=clients.find(x=>x.id==cid); await db.collection('twinz_clients').doc(cid).update({files:c.files.filter(f=>f.url!=url)}); try{await storage.refFromURL(url).delete();}catch(e){} if(cid==editingClientId)editClient(cid);}
-async function saveClient(){await db.collection('twinz_clients').doc(editingClientId).update({name:editName.value,whatsapp:editWhatsapp.value,email:editEmail.value,address:editAddress.value,appLink:editApp.value,websiteLink:editWebsite.value,notes:editNotes.value}); closeModal();}
-async function deleteClient(){if(confirm('Delete client?')){await db.collection('twinz_clients').doc(editingClientId).delete(); closeModal();}}
-async function generateInvoice(){if(!clientSelect.value)return alert('Select client'); let c=clients.find(x=>x.id==clientSelect.value); let items=[]; for(let i=0;i<itemCount;i++){let d=document.getElementById('item'+i)?.value,p=document.getElementById('price'+i)?.value; if(d&&p)items.push({desc:d,price:+p});} let num='TCS-'+new Date().getFullYear()+'-'+String(invoices.length+1).padStart(4,'0'); await createPDF(num,c,items); await db.collection('twinz_invoices').add({num,clientId:c.id,clientName:c.name,items,total:+total.textContent,status:'unpaid',date:new Date().toISOString(),portalId:c.portalId,useVAT:vatToggle.checked}); let wa=c.whatsapp.replace(/\D/g,''); if(wa.startsWith('0'))wa='27'+wa.slice(1); window.open(`https://wa.me/${wa}/?text=${encodeURIComponent(`Invoice ${num} R${total.textContent}\n${location.origin+location.pathname}?portal=${c.portalId}`)}`);}
-async function createPDF(n,c,i){const{jsPDF}=window.jspdf; const d=new jsPDF(); d.text(COMPANY.name,20,20); d.text(n,160,20); let y=40; i.forEach((x,idx)=>{d.text(`${idx+1}. ${x.desc}`,20,y); d.text('R'+x.price.toFixed(2),170,y); y+=10;}); d.text('TOTAL R'+total.textContent,140,y+10); d.save(n+'.pdf');}
-function loadInvoices(){invoiceList.innerHTML=invoices.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(inv=>`<div class="inv-row ${inv.status=='paid'?'status-paid':inv.proofUrl?'status-pending':''}"><div>${inv.num} - ${inv.clientName}<br><small>R${inv.total} | ${inv.status}</small></div><div>${inv.status=='paid'?`<button class="btn-cyan" data-paid="${inv.id}">Send Paid</button>`:`<button class="btn-green" data-mark="${inv.id}">Mark Paid</button>`}</div></div>`).join('')||'No invoices'; document.querySelectorAll('[data-mark]').forEach(b=>b.addEventListener('click',()=>db.collection('twinz_invoices').doc(b.dataset.mark).update({status:'paid'}))); document.querySelectorAll('[data-paid]').forEach(b=>b.addEventListener('click',()=>{let inv=invoices.find(i=>i.id==b.dataset.paid); createPDF(inv.num,clients.find(c=>c.id==inv.clientId),inv.items);}));}
-async function addRecurring(){if(recClient.value&&recService.value&&recAmount.value){await db.collection('twinz_recurring').add({clientId:recClient.value,service:recService.value,amount:+recAmount.value,day:+recDay.value}); alert('Set!');}}
-function loadRecurring(){recList.innerHTML=recurring.map(r=>`<div class="inv-row">Day ${r.day} - ${clients.find(c=>c.id==r.clientId)?.name} - R${r.amount}</div>`).join('')||'None';}
-function updateDashboard(){statTotal.textContent='R'+invoices.filter(i=>i.status=='paid').reduce((a,b)=>a+b.total,0); statOutstanding.textContent='R'+invoices.filter(i=>i.status=='unpaid').reduce((a,b)=>a+b.total,0); statClients.textContent=clients.length;}
-function loadReports(){new Chart(revenueChart,{type:'bar',data:{labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],datasets:[{data:[...Array(12)].map((_,i)=>invoices.filter(x=>new Date(x.date).getMonth()==i&&x.status=='paid').reduce((a,b)=>a+b.total,0)),backgroundColor:'#3b82f6'}]},options:{responsive:true,maintainAspectRatio:false}});}
-const p=new URLSearchParams(location.search).get('portal'); if(p){document.body.innerHTML=`<div class="card"><h2>Client Portal</h2><select id="portalInv"></select><input type="file" id="proofFile"><button class="btn-green" id="proofBtn">Upload Proof</button></div>`; db.collection('twinz_invoices').where('portalId','==',p).where('status','==','unpaid').get().then(s=>{portalInv.innerHTML='<option value="">Select</option>'+s.docs.map(d=>`<option value="${d.id}">${d.data().num}</option>`).join('');}); proofBtn.addEventListener('click', async()=>{let id=portalInv.value,f=proofFile.files[0]; if(id&&f){let u=await storage.ref('proofs/'+id).put(f).then(r=>r.ref.getDownloadURL()); await db.collection('twinz_invoices').doc(id).update({proofUrl:u,status:'pending'}); alert('Uploaded');}});}
-</script>
-</body>
-</html>
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
