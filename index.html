@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- FIX 1: REMOVED user-scalable=no -->
-<title>Twinz Cooperate - GOD TIER v2.4.7</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Twinz Cooperate - GOD TIER v2.4.6</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script> <!-- FIX 3: ADDED AUTH -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -22,7 +18,7 @@ h2{font-size:18px;margin-bottom:14px;color:#e5e7eb}
 .logo{width:48px;height:48px;border-radius:12px;object-fit:cover;border:2px solid #3b82f6}
 .sub{color:#9ca3af;font-size:13px;margin-bottom:18px}
 input,textarea,select{width:100%;padding:13px;border-radius:10px;border:1px solid #374151;background:#0a0a0a;color:#f1f5f9;margin-bottom:11px;font-size:16px}
-button{background:#2563eb;color:white;border:none;padding:15px 22px;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;transition:0.2s;width:100%;touch-action: manipulation;} /* FIX 2: ADDED */
+button{background:#2563eb;color:white;border:none;padding:15px 22px;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;transition:0.2s;width:100%}
 button:active{transform:scale(0.97);background:#1d4ed8}
 .btn-green{background:#16a34a}.btn-red{background:#dc2626}.btn-yellow{background:#ca8a04}.btn-purple{background:#7c3aed}.btn-blue{background:#0ea5e9}.btn-cyan{background:#06b6d4}.btn-gray{background:#4b5563}
 .grid{display:grid;grid-template-columns:2fr 1fr;gap:12px}
@@ -40,7 +36,7 @@ button:active{transform:scale(0.97);background:#1d4ed8}
 .status-overdue{border-left-color:#dc2626}
 .status-pending{border-left-color:#ca8a04}
 .tabs{display:flex;gap:8px;margin-bottom:18px;overflow-x:auto}
-.tab{flex:1;min-width:110px;padding:11px;text-align:center;background:#1f2937;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px;touch-action: manipulation;} /* FIX 2: ADDED */
+.tab{flex:1;min-width:110px;padding:11px;text-align:center;background:#1f2937;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px}
 .tab.active{background:#2563eb}
 .hidden{display:none}
 .total-box{background:#1e3a8a;padding:16px;border-radius:12px;margin-top:12px}
@@ -66,37 +62,20 @@ input:checked +.slider:before{transform:translateX(24px)}
 .filter-bar input{flex:1}
 .filter-bar select{width:140px}
 @media(max-width:650px){.grid,.grid-3{grid-template-columns:1fr}}
-.logout-btn{background:#dc2626;width:auto;padding:10px 16px;font-size:13px;margin-left:auto}
-.top-bar{display:flex;align-items:center;margin-bottom:18px}
 </style>
 </head>
 <body>
 
-<!-- FIX: ADDED LOGIN SCREEN V17 STYLE -->
-<div id="loginScreen" class="card">
-  <h1><img src="https://files.catbox.moe/0zympr.jpeg" class="logo"> Twinz Admin</h1>
-  <div class="sub">Login to access GOD TIER backend</div>
-  <input type="email" id="email" placeholder="twinz.cooperate.services@gmail.com">
-  <input type="password" id="password" placeholder="Password">
-  <button id="loginBtn" class="btn-green">Login</button>
-  <div id="loginError" style="color:#dc2626;margin-top:8px;font-size:13px"></div>
-</div>
-
-<!-- APP SCREEN -->
-<div id="appScreen" class="hidden">
-<div class="top-bar">
-  <h1><img src="https://files.catbox.moe/0zympr.jpeg" class="logo"> Twinz App & Web Development Specialist </h1>
-  <button id="logoutBtn" class="logout-btn">Logout</button> <!-- FIX 2 -->
-</div>
+<h1><img src="https://files.catbox.moe/0zympr.jpeg" class="logo"> Twinz Cooperate ⚡ GOD TIER</h1>
 <div class="sub">IT Solutions & Web Development | VAT: 9819040198</div>
 
 <div class="tabs">
-  <div class="tab active" data-tab="dashboard">Dashboard</div> <!-- FIX 2 -->
-  <div class="tab" data-tab="new">New Invoice</div>
-  <div class="tab" data-tab="recurring">Recurring</div>
-  <div class="tab" data-tab="clients">Client Cloud</div>
-  <div class="tab" data-tab="list">Invoices</div>
-  <div class="tab" data-tab="reports">Reports</div>
+  <div class="tab active" onclick="showTab('dashboard')">Dashboard</div>
+  <div class="tab" onclick="showTab('new')">New Invoice</div>
+  <div class="tab" onclick="showTab('recurring')">Recurring</div>
+  <div class="tab" onclick="showTab('clients')">Client Cloud</div>
+  <div class="tab" onclick="showTab('list')">Invoices</div>
+  <div class="tab" onclick="showTab('reports')">Reports</div>
 </div>
 
 <!-- DASHBOARD -->
@@ -113,7 +92,7 @@ input:checked +.slider:before{transform:translateX(24px)}
 <div id="new" class="card hidden">
   <h2>Create Invoice</h2>
   <select id="clientSelect"><option value="">Select Client...</option></select>
-  <button class="btn-yellow" id="addClientBtn">+ Add Client</button> <!-- FIX 2 -->
+  <button class="btn-yellow" onclick="addClient()">+ Add Client</button>
 
   <div class="label">Client Email</div>
   <input id="clientEmail" placeholder="client@email.com">
@@ -123,7 +102,7 @@ input:checked +.slider:before{transform:translateX(24px)}
 
   <div class="toggle">
     <label class="switch">
-      <input type="checkbox" id="vatToggle" checked> <!-- FIX 2 -->
+      <input type="checkbox" id="vatToggle" checked onchange="calcTotal()">
       <span class="slider"></span>
     </label>
     <span>Tax Invoice + VAT 15%</span>
@@ -132,16 +111,16 @@ input:checked +.slider:before{transform:translateX(24px)}
   <div id="items" style="margin-top:16px">
     <div class="grid">
       <input placeholder="Service / Description" id="item0">
-      <input type="number" placeholder="Amount R" id="price0"> <!-- FIX 2 -->
+      <input type="number" placeholder="Amount R" id="price0" oninput="calcTotal()">
     </div>
   </div>
-  <button id="addItemBtn">+ Add Item</button> <!-- FIX 2 -->
+  <button onclick="addItem()">+ Add Item</button>
 
   <div class="label">Discount R</div>
-  <input type="number" id="discount" value="0" placeholder="Enter discount amount"> <!-- FIX 2 -->
+  <input type="number" id="discount" value="0" placeholder="Enter discount amount" oninput="calcTotal()">
 
   <div class="label">Notes / Payment Terms</div>
-  <textarea id="notes" rows="2">Payment due within 7 days. Thank you for your business!</textarea>
+  <textarea id="notes" rows="2" placeholder="Payment due within 7 days. Thank you for your business!">Payment due within 7 days. Thank you for your business!</textarea>
 
   <div class="total-box">
     <div style="display:flex;justify-content:space-between;margin-bottom:8px">
@@ -158,7 +137,7 @@ input:checked +.slider:before{transform:translateX(24px)}
     </div>
   </div>
 
-  <button class="btn-green" style="margin-top:16px" id="generateBtn">Generate PDF + WhatsApp + Portal Link</button> <!-- FIX 2 -->
+  <button class="btn-green" style="margin-top:16px" onclick="generateInvoice()">Generate PDF + WhatsApp + Portal Link</button>
 </div>
 
 <!-- RECURRING -->
@@ -168,7 +147,7 @@ input:checked +.slider:before{transform:translateX(24px)}
   <input placeholder="Service - e.g. Monthly Hosting" id="recService">
   <input type="number" placeholder="Amount R per month" id="recAmount">
   <input type="number" placeholder="Day of month 1-28" id="recDay" value="1">
-  <button class="btn-purple" id="addRecBtn">Set Recurring Billing</button> <!-- FIX 2 -->
+  <button class="btn-purple" onclick="addRecurring()">Set Recurring Billing</button>
   <div id="recList" style="margin-top:20px"></div>
 </div>
 
@@ -192,8 +171,8 @@ input:checked +.slider:before{transform:translateX(24px)}
 </div>
 
 <!-- EDIT CLIENT MODAL -->
-<div id="editModal" class="modal"> <!-- FIX 2 -->
-  <div class="modal-card" id="modalCard"> <!-- FIX 2 -->
+<div id="editModal" class="modal" onclick="closeModal(event)">
+  <div class="modal-card" onclick="event.stopPropagation()">
     <h2>Edit Client Folder</h2>
     <div class="label">Company Name</div>
     <input id="editName" placeholder="Company Name">
@@ -213,12 +192,12 @@ input:checked +.slider:before{transform:translateX(24px)}
     <div class="label">Upload Files - APK, ZIP, PDF, PSD</div>
     <input type="file" id="fileUpload" multiple>
     <div class="upload-progress"><div class="upload-bar" id="uploadBar"></div></div>
-    <button class="btn-cyan" id="uploadBtn">Upload to This Client</button> <!-- FIX 2 -->
+    <button class="btn-cyan" onclick="uploadFiles()">Upload to This Client</button>
 
     <div class="label">Search & Filter Files</div>
     <div class="filter-bar">
-      <input placeholder="Search files..." id="fileSearch"> <!-- FIX 2 -->
-      <select id="fileFilter"> <!-- FIX 2 -->
+      <input placeholder="Search files..." id="fileSearch" oninput="filterFiles()">
+      <select id="fileFilter" onchange="filterFiles()">
         <option value="all">All Types</option>
         <option value="apk">APK</option>
         <option value="zip">ZIP</option>
@@ -232,48 +211,24 @@ input:checked +.slider:before{transform:translateX(24px)}
     <div class="label">Notes / Credentials</div>
     <textarea id="editNotes" rows="3" placeholder="Hosting login, domain info, etc"></textarea>
 
-    <button class="btn-green" id="saveClientBtn">Save Folder</button> <!-- FIX 2 -->
-    <button class="btn-red" id="deleteClientBtn">Delete Client</button> <!-- FIX 2 -->
-    <button class="btn-blue" id="closeModalBtn">Cancel</button> <!-- FIX 2 -->
+    <button class="btn-green" onclick="saveClient()">Save Folder</button>
+    <button class="btn-red" onclick="deleteClient()">Delete Client</button>
+    <button class="btn-blue" onclick="closeModal()">Cancel</button>
   </div>
 </div>
-</div> <!-- appScreen -->
 
 <script>
-const firebaseConfig = { // FIX 4: YOUR REAL KEYS
-  apiKey: "AIzaSyBJP71gaIqvJi2QZSJBIWEMMzda2jhcpW8",
-  authDomain: "twinz-app-and-web-specialist.firebaseapp.com",
-  projectId: "twinz-app-and-web-specialist",
-  storageBucket: "twinz-app-and-web-specialist.firebasestorage.app",
-  messagingSenderId: "457882091771",
-  appId: "1:457882091771:web:9e6b54ca264c6c2803f05e"
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "XXX",
+  appId: "YOUR_APP_ID"
 };
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth(); // FIX 3
 const db = firebase.firestore();
 const storage = firebase.storage();
-
-const loginScreen = document.getElementById('loginScreen');
-const appScreen = document.getElementById('appScreen');
-
-auth.onAuthStateChanged(user => { // FIX 3: LOGIN GATE
-  if(user){
-    loginScreen.classList.add('hidden');
-    appScreen.classList.remove('hidden');
-    initApp();
-  } else {
-    loginScreen.classList.remove('hidden');
-    appScreen.classList.add('hidden');
-  }
-});
-
-document.getElementById('loginBtn').addEventListener('click', async ()=>{ // FIX 2
-  const email=document.getElementById('email').value.trim();
-  const pass=document.getElementById('password').value;
-  loginError.textContent='Logging in...';
-  try{await auth.signInWithEmailAndPassword(email, pass);}catch(e){loginError.textContent=e.code;}
-});
-document.getElementById('logoutBtn').addEventListener('click', ()=>auth.signOut()); // FIX 2
 
 let itemCount = 1;
 let clients = [];
@@ -295,33 +250,11 @@ const COMPANY = {
   logo: 'https://files.catbox.moe/0zympr.jpeg'
 };
 
-function initApp(){ // FIX 2: Bind all once
-  db.collection('twinz_clients').onSnapshot(snap=>{clients=snap.docs.map(d=>({id:d.id,...d.data()})); loadClientSelect(); loadClients();});
-  db.collection('twinz_invoices').onSnapshot(snap=>{invoices=snap.docs.map(d=>({id:d.id,...d.data()})); loadInvoices(); updateDashboard();});
-  db.collection('twinz_recurring').onSnapshot(snap=>{recurring=snap.docs.map(d=>({id:d.id,...d.data()})); loadRecurring();});
-
-  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', e=>showTab(t.dataset.tab, e)));
-  addItemBtn.addEventListener('click', addItem);
-  vatToggle.addEventListener('change', calcTotal);
-  discount.addEventListener('input', calcTotal);
-  generateBtn.addEventListener('click', generateInvoice);
-  addClientBtn.addEventListener('click', addClient);
-  addRecBtn.addEventListener('click', addRecurring);
-  uploadBtn.addEventListener('click', uploadFiles);
-  saveClientBtn.addEventListener('click', saveClient);
-  deleteClientBtn.addEventListener('click', deleteClient);
-  closeModalBtn.addEventListener('click', closeModal);
-  fileSearch.addEventListener('input', filterFiles);
-  fileFilter.addEventListener('change', filterFiles);
-  editModal.addEventListener('click', closeModal);
-  modalCard.addEventListener('click', e=>e.stopPropagation());
-}
-
-function showTab(tab, e){
-  document.querySelectorAll('#appScreen >.card').forEach(c=>c.classList.add('hidden'));
+function showTab(tab){
+  document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
   document.getElementById(tab).classList.remove('hidden');
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  e.target.classList.add('active');
+  event.target.classList.add('active');
   if(tab==='clients') loadClients();
   if(tab==='list') loadInvoices();
   if(tab==='recurring') loadRecurring();
@@ -329,9 +262,30 @@ function showTab(tab, e){
   if(tab==='reports') loadReports();
 }
 
+db.collection('twinz_clients').onSnapshot(snap=>{
+  clients = snap.docs.map(d=>({id:d.id,...d.data()}));
+  loadClientSelect();
+  loadClients();
+});
+
+db.collection('twinz_invoices').onSnapshot(snap=>{
+  invoices = snap.docs.map(d=>({id:d.id,...d.data()}));
+  loadInvoices();
+  updateDashboard();
+});
+
+db.collection('twinz_recurring').onSnapshot(snap=>{
+  recurring = snap.docs.map(d=>({id:d.id,...d.data()}));
+  loadRecurring();
+});
+
 function addItem(){
-  items.insertAdjacentHTML('beforeend', `<div class="grid"><input placeholder="Service / Description" id="item${itemCount}"><input type="number" placeholder="Amount R" id="price${itemCount}"></div>`);
-  document.getElementById('price'+itemCount).addEventListener('input', calcTotal); // FIX 2
+  document.getElementById('items').insertAdjacentHTML('beforeend', `
+    <div class="grid">
+      <input placeholder="Service / Description" id="item${itemCount}">
+      <input type="number" placeholder="Amount R" id="price${itemCount}" oninput="calcTotal()">
+    </div>
+  `);
   itemCount++;
 }
 
@@ -344,14 +298,14 @@ function calcTotal(){
   let afterDiscount = subtotal - discount;
   if(afterDiscount < 0) afterDiscount = 0;
 
-  let useVAT = vatToggle.checked;
+  let useVAT = document.getElementById('vatToggle').checked;
   let vat = useVAT? afterDiscount * 0.15 : 0;
 
-  vatRow.style.display = useVAT? 'flex' : 'none';
-  subtotal.textContent = subtotal.toFixed(2);
-  discountShow.textContent = discount.toFixed(2);
-  vat.textContent = vat.toFixed(2);
-  total.textContent = (afterDiscount + vat).toFixed(2);
+  document.getElementById('vatRow').style.display = useVAT? 'flex' : 'none';
+  document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+  document.getElementById('discountShow').textContent = discount.toFixed(2);
+  document.getElementById('vat').textContent = vat.toFixed(2);
+  document.getElementById('total').textContent = (afterDiscount + vat).toFixed(2);
 }
 
 async function addClient(){
@@ -360,17 +314,33 @@ async function addClient(){
   let email = prompt('Client Email:');
   let address = prompt('Client Address:');
   if(name && whatsapp){
-    await db.collection('twinz_clients').add({name, whatsapp, email, address, appLink: '', websiteLink: '', files: [], notes: '', portalId: Math.random().toString(36).substr(2,9)});
+    await db.collection('twinz_clients').add({
+      name, whatsapp, email, address,
+      appLink: '',
+      websiteLink: '',
+      files: [],
+      notes: '',
+      portalId: Math.random().toString(36).substr(2,9)
+    });
   }
 }
 
 function loadClientSelect(){
-  clientSelect.innerHTML = recClient.innerHTML = '<option value="">Select Client...</option>';
+  let sel = document.getElementById('clientSelect');
+  let recSel = document.getElementById('recClient');
+  sel.innerHTML = recSel.innerHTML = '<option value="">Select Client...</option>';
   clients.forEach(c=>{
-    clientSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-    recClient.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+    sel.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+    recSel.innerHTML += `<option value="${c.id}">${c.name}</option>`;
   });
-  clientSelect.onchange = () => {let c = clients.find(x=>x.id==clientSelect.value); if(c){clientEmail.value = c.email || ''; clientAddress.value = c.address || '';}};
+
+  sel.onchange = () => {
+    let c = clients.find(x=>x.id==sel.value);
+    if(c){
+      document.getElementById('clientEmail').value = c.email || '';
+      document.getElementById('clientAddress').value = c.address || '';
+    }
+  };
 }
 
 function loadClients(){
@@ -379,35 +349,101 @@ function loadClients(){
     let portalUrl = location.origin + location.pathname + '?portal=' + c.portalId;
     let filesHtml = '';
     if(c.files && c.files.length > 0){
-      filesHtml = c.files.map(f=>`<div class="file-item"><a href="${f.url}" target="_blank"><span class="file-type">${getFileType(f.name).toUpperCase()}</span> ${f.name}</a><button class="btn-red" style="width:auto;padding:4px 8px;font-size:11px" data-del="${c.id}|${f.url}">Delete</button></div>`).join(''); // FIX 2
+      filesHtml = c.files.map(f=>`<div class="file-item" data-name="${f.name.toLowerCase()}" data-type="${getFileType(f.name)}"><a href="${f.url}" target="_blank"><span class="file-type">${getFileType(f.name).toUpperCase()}</span> ${f.name}</a><button class="btn-red" style="width:auto;padding:4px 8px;font-size:11px" onclick="deleteFile('${c.id}','${f.url}')">Delete</button></div>`).join('');
     }
-    html += `<div class="client-folder"><h3>${c.name}</h3><div style="color:#9ca3af;font-size:13px;margin-bottom:10px">${c.whatsapp} | ${c.email}</div>${c.address? `<div style="color:#6b7280;font-size:12px;margin-bottom:10px">${c.address}</div>` : ''}<div class="link-box">${c.appLink? `<a href="${c.appLink}" target="_blank">📱 App</a>` : ''}${c.websiteLink? `<a href="${c.websiteLink}" target="_blank">🌐 Website</a>` : ''}</div>${filesHtml? `<div style="margin:10px 0"><div class="label">Files:</div>${filesHtml}</div>` : ''}<div class="portal-link">Portal: ${portalUrl}</div><div class="client-actions"><button class="btn-blue" data-edit="${c.id}">Edit + Upload</button><button class="btn-cyan" data-copy="${portalUrl}">Copy Link</button></div></div>`; // FIX 2
+
+    html += `<div class="client-folder">
+      <h3>${c.name}</h3>
+      <div style="color:#9ca3af;font-size:13px;margin-bottom:10px">${c.whatsapp} | ${c.email}</div>
+      ${c.address? `<div style="color:#6b7280;font-size:12px;margin-bottom:10px">${c.address}</div>` : ''}
+
+      <div class="link-box">
+        ${c.appLink? `<a href="${c.appLink}" target="_blank">📱 App</a>` : ''}
+        ${c.websiteLink? `<a href="${c.websiteLink}" target="_blank">🌐 Website</a>` : ''}
+      </div>
+
+      ${filesHtml? `<div style="margin:10px 0"><div class="label">Files:</div>${filesHtml}</div>` : ''}
+
+      <div class="portal-link">Portal: ${portalUrl}</div>
+
+      <div class="client-actions">
+        <button class="btn-blue" onclick="editClient('${c.id}')">Edit + Upload</button>
+        <button class="btn-cyan" onclick="copyLink('${portalUrl}')">Copy Link</button>
+      </div>
+    </div>`;
   });
-  clientList.innerHTML = html || '<div class="sub">No clients yet. Add your first client folder.</div>';
-  document.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click', ()=>editClient(b.dataset.edit))); // FIX 2
-  document.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click', ()=>{const[id,url]=b.dataset.del.split('|'); deleteFile(id,url);})); // FIX 2
-  document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click', ()=>copyLink(b.dataset.copy))); // FIX 2
+  document.getElementById('clientList').innerHTML = html || '<div class="sub">No clients yet. Add your first client folder.</div>';
 }
 
-function getFileType(filename){let ext = filename.split('.').pop().toLowerCase(); if(['jpg','jpeg','png','gif','webp'].includes(ext)) return 'jpg'; return ext;}
+function getFileType(filename){
+  let ext = filename.split('.').pop().toLowerCase();
+  if(['jpg','jpeg','png','gif','webp'].includes(ext)) return 'jpg';
+  return ext;
+}
 
-function editClient(id){editingClientId = id; editingClientData = clients.find(c=>c.id==id); editName.value = editingClientData.name || ''; editWhatsapp.value = editingClientData.whatsapp || ''; editEmail.value = editingClientData.email || ''; editAddress.value = editingClientData.address || ''; editApp.value = editingClientData.appLink || ''; editWebsite.value = editingClientData.websiteLink || ''; editNotes.value = editingClientData.notes || ''; filterFiles(); editModal.classList.add('active');}
+function editClient(id){
+  editingClientId = id;
+  editingClientData = clients.find(c=>c.id==id);
+  document.getElementById('editName').value = editingClientData.name || '';
+  document.getElementById('editWhatsapp').value = editingClientData.whatsapp || '';
+  document.getElementById('editEmail').value = editingClientData.email || '';
+  document.getElementById('editAddress').value = editingClientData.address || '';
+  document.getElementById('editApp').value = editingClientData.appLink || '';
+  document.getElementById('editWebsite').value = editingClientData.websiteLink || '';
+  document.getElementById('editNotes').value = editingClientData.notes || '';
 
-function filterFiles(){if(!editingClientData) return; let search = fileSearch.value.toLowerCase(); let filter = fileFilter.value; let files = editingClientData.files || []; let filesHtml = files.filter(f=>{let type = getFileType(f.name); let matchSearch = f.name.toLowerCase().includes(search); let matchFilter = filter==='all' || type===filter; return matchSearch && matchFilter;}).map(f=>`<div class="file-item"><a href="${f.url}" target="_blank"><span class="file-type">${getFileType(f.name).toUpperCase()}</span> ${f.name}</a><button class="btn-red" style="width:auto;padding:4px 8px;font-size:11px" data-del="${editingClientId}|${f.url}">X</button></div>`).join(''); fileList.innerHTML = filesHtml || '<div style="color:#6b7280;font-size:13px">No files found</div>'; document.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click', ()=>{const[id,url]=b.dataset.del.split('|'); deleteFile(id,url);}));} // FIX 2
+  filterFiles();
+  document.getElementById('editModal').classList.add('active');
+}
 
-function closeModal(e){if(!e || e.target.id === 'editModal') editModal.classList.remove('active');}
+function filterFiles(){
+  if(!editingClientData) return;
+  let search = document.getElementById('fileSearch').value.toLowerCase();
+  let filter = document.getElementById('fileFilter').value;
+  let files = editingClientData.files || [];
+
+  let filesHtml = files.filter(f=>{
+    let type = getFileType(f.name);
+    let matchSearch = f.name.toLowerCase().includes(search);
+    let matchFilter = filter==='all' || type===filter;
+    return matchSearch && matchFilter;
+  }).map(f=>`<div class="file-item" data-name="${f.name.toLowerCase()}" data-type="${getFileType(f.name)}"><a href="${f.url}" target="_blank"><span class="file-type">${getFileType(f.name).toUpperCase()}</span> ${f.name}</a><button class="btn-red" style="width:auto;padding:4px 8px;font-size:11px" onclick="deleteFile('${editingClientId}','${f.url}')">X</button></div>`).join('');
+
+  document.getElementById('fileList').innerHTML = filesHtml || '<div style="color:#6b7280;font-size:13px">No files found</div>';
+}
+
+function closeModal(e){
+  if(!e || e.target.id === 'editModal') document.getElementById('editModal').classList.remove('active');
+}
 
 async function uploadFiles(){
-  const files = fileUpload.files;
+  const files = document.getElementById('fileUpload').files;
   if(!files.length) return alert('Select files first');
+
   let clientFiles = editingClientData.files || [];
+  const bar = document.getElementById('uploadBar');
+
   for(let i=0; i<files.length; i++){
-    const ref = storage.ref(`client-files/${editingClientId}/${Date.now()}_${files[i].name}`);
-    await ref.put(files[i]);
-    clientFiles.push({name: files[i].name, url: await ref.getDownloadURL(), uploaded: new Date().toISOString()});
+    const file = files[i];
+    const ref = storage.ref(`client-files/${editingClientId}/${Date.now()}_${file.name}`);
+    const task = ref.put(file);
+
+    await new Promise((resolve, reject) => {
+      task.on('state_changed',
+        snap => bar.style.width = ((i+1)/files.length*100) + '%',
+        reject,
+        async () => {
+          const url = await ref.getDownloadURL();
+          clientFiles.push({name: file.name, url, uploaded: new Date().toISOString()});
+          resolve();
+        }
+      );
+    });
   }
+
   await db.collection('twinz_clients').doc(editingClientId).update({files: clientFiles});
-  fileUpload.value = '';
+  document.getElementById('fileUpload').value = '';
+  bar.style.width = '0%';
   alert('Files uploaded!');
   editClient(editingClientId);
 }
@@ -415,37 +451,233 @@ async function uploadFiles(){
 async function deleteFile(clientId, url){
   if(!confirm('Delete this file?')) return;
   let client = clients.find(c=>c.id==clientId);
-  await db.collection('twinz_clients').doc(clientId).update({files: client.files.filter(f=>f.url!==url)});
-  try {await storage.refFromURL(url).delete();} catch(e){}
+  let newFiles = client.files.filter(f=>f.url!==url);
+  await db.collection('twinz_clients').doc(clientId).update({files: newFiles});
+
+  try {
+    const ref = storage.refFromURL(url);
+    await ref.delete();
+  } catch(e){}
+
   if(clientId === editingClientId) editClient(clientId);
 }
 
-async function saveClient(){await db.collection('twinz_clients').doc(editingClientId).update({name: editName.value, whatsapp: editWhatsapp.value, email: editEmail.value, address: editAddress.value, appLink: editApp.value, websiteLink: editWebsite.value, notes: editNotes.value, files: editingClientData.files || []}); closeModal(); alert('Client folder updated!');}
+async function saveClient(){
+  let data = {
+    name: document.getElementById('editName').value,
+    whatsapp: document.getElementById('editWhatsapp').value,
+    email: document.getElementById('editEmail').value,
+    address: document.getElementById('editAddress').value,
+    appLink: document.getElementById('editApp').value,
+    websiteLink: document.getElementById('editWebsite').value,
+    notes: document.getElementById('editNotes').value,
+    files: editingClientData.files || []
+  };
+  if(data.name && data.whatsapp){
+    await db.collection('twinz_clients').doc(editingClientId).update(data);
+    closeModal();
+    alert('Client folder updated!');
+  }
+}
 
-async function deleteClient(){if(confirm('Delete this client folder and all files?')){if(editingClientData.files){for(let f of editingClientData.files){try { await storage.refFromURL(f.url).delete(); } catch(e){}}} await db.collection('twinz_clients').doc(editingClientId).delete(); closeModal();}}
+async function deleteClient(){
+  if(confirm('Delete this client folder and all files?')){
+    if(editingClientData.files){
+      for(let f of editingClientData.files){
+        try { await storage.refFromURL(f.url).delete(); } catch(e){}
+      }
+    }
+    await db.collection('twinz_clients').doc(editingClientId).delete();
+    closeModal();
+  }
+}
 
-function copyLink(link){navigator.clipboard.writeText(link); alert('Portal link copied!');}
+function copyLink(link){
+  navigator.clipboard.writeText(link);
+  alert('Portal link copied!');
+}
 
 async function generateInvoice(){
-  if(!clientSelect.value) return alert('Select client first');
-  const client = clients.find(c=>c.id==clientSelect.value);
-  const total = total.textContent;
+  const clientId = document.getElementById('clientSelect').value;
+  if(!clientId) return alert('Select client first');
+
+  const client = clients.find(c=>c.id==clientId);
+  const clientEmail = document.getElementById('clientEmail').value;
+  const clientAddress = document.getElementById('clientAddress').value;
+  const total = document.getElementById('total').textContent;
+  const subtotal = document.getElementById('subtotal').textContent;
+  const discount = document.getElementById('discount').value;
+  const vat = document.getElementById('vat').textContent;
+  const useVAT = document.getElementById('vatToggle').checked;
+  const notes = document.getElementById('notes').value;
   const invNum = 'TCS-' + new Date().getFullYear() + '-' + String(invoices.length+1).padStart(4,'0');
-  let items = []; for(let i=0; i<itemCount; i++){let d=document.getElementById('item'+i)?.value; let p=document.getElementById('price'+i)?.value; if(d&&p) items.push({desc:d, price:parseFloat(p)});}
-  await createInvoicePDF(invNum, client, clientEmail.value, clientAddress.value, items, subtotal.textContent, discount.value, vat.textContent, total, vatToggle.checked, notes.value, false);
-  await db.collection('twinz_invoices').add({num: invNum, clientId: client.id, clientName: client.name, clientEmail: clientEmail.value, clientAddress: clientAddress.value, items, subtotal:+subtotal.textContent, discount:+discount.value, vat:+vat.textContent, total:+total, useVAT:vatToggle.checked, notes:notes.value, status:'unpaid', date:new Date().toISOString(), portalId: client.portalId});
-  let waNum = client.whatsapp.replace(/\D/g,''); if(waNum.startsWith('0')) waNum='27'+waNum.slice(1);
-  window.open(`https://wa.me/${waNum}/?text=${encodeURIComponent(`Hi ${client.name},\n\n${vatToggle.checked?'TAX INVOICE':'INVOICE'} ${invNum}\nTotal: R${total}\nPortal: ${location.origin+location.pathname}?portal=${client.portalId}`)}`);
-  alert('Invoice created + WhatsApp opened');
+
+  let items = [];
+  for(let i=0; i<itemCount; i++){
+    let desc = document.getElementById('item'+i)?.value;
+    let price = document.getElementById('price'+i)?.value;
+    if(desc && price) items.push({desc, price: parseFloat(price)});
+  }
+
+  await createInvoicePDF(invNum, client, clientEmail, clientAddress, items, subtotal, discount, vat, total, useVAT, notes, false);
+
+  await db.collection('twinz_invoices').add({
+    num: invNum,
+    clientId,
+    clientName: client.name,
+    clientEmail,
+    clientAddress,
+    items,
+    subtotal: parseFloat(subtotal),
+    discount: parseFloat(discount),
+    vat: parseFloat(vat),
+    total: parseFloat(total),
+    useVAT,
+    notes,
+    status: 'unpaid',
+    date: new Date().toISOString(),
+    portalId: client.portalId
+  });
+
+  let msg = `Hi ${client.name},\n\n${useVAT? 'TAX INVOICE' : 'INVOICE'} ${invNum} from Twinz Cooperate.\nTotal: R${total}${useVAT? ' incl VAT' : ''}\nClient Portal: ${location.origin + location.pathname}?portal=${client.portalId}\n\nThank you!`;
+  window.open(`https://wa.me/${client.whatsapp.replace(/\D/g,'')}/?text=${encodeURIComponent(msg)}`);
+
+  alert('Professional invoice created + WhatsApp opened');
+  location.reload();
 }
 
 // FIXED v2.4.6 - Logo + boxes no overlap - ONLY ONE FUNCTION
 async function createInvoicePDF(invNum, client, clientEmail, clientAddress, items, subtotal, discount, vat, total, useVAT, notes, isPaid){
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  try {const logoImg = await fetch(COMPANY.logo).then(r=>r.blob()).then(b=>new Promise(resolve=>{let reader = new FileReader(); reader.onload = ()=>resolve(reader.result); reader.readAsDataURL(b);})); doc.addImage(logoImg, 'JPEG', 164, 15, 25, 25);} catch(e){}
-  if(isPaid){doc.setFontSize(50); doc.setTextColor(16, 185, 129); doc.text('PAID', 65, 140, {angle: -30}); doc.setFontSize(11); doc.text('Paid on: ' + new Date().toLocaleDateString('en-ZA'), 70, 155, {angle: -30}); doc.setTextColor(0);}
-  doc.setFontSize(24); doc.setFont(undefined, 'bold'); doc.text(useVAT? 'TAX INVOICE' : 'INVOICE', 20, 25); doc.setDrawColor(37, 99, 235); doc.setLineWidth(0.5); doc.rect(20, 55, 90, 45); doc.setFontSize(10); doc.setFont(undefined, 'bold'); doc.text(COMPANY.name, 23, 62); doc.setFont(undefined, 'normal'); doc.text(COMPANY.address, 23, 69); doc.text('Email: ' + COMPANY.email, 23, 76); doc.text('Tel: ' + COMPANY.phone, 23, 83); if(useVAT) doc.text('VAT: ' + COMPANY.vat + ' | Reg: ' + COMPANY.reg, 23, 90); doc.text('Bank: ' + COMPANY.bank + ' Acc: ' + COMPANY.acc, 23, 97); doc.rect(120, 55, 70, 45); doc.setFont(undefined, 'bold'); doc.text('INVOICE NO:', 123, 62); doc.text('DATE:', 123, 69); doc.text('DUE DATE:', 123, 76); doc.setFont(undefined, 'normal'); doc.text(invNum, 160, 62); let today = new Date(); let dueDate = new Date(today); dueDate.setDate(today.getDate() + 7); doc.text(today.toLocaleDateString('en-ZA'), 160, 69); doc.text(dueDate.toLocaleDateString('en-ZA'), 160, 76); doc.setFontSize(11); doc.setFont(undefined, 'bold'); doc.text('BILL TO:', 20, 115); doc.setFont(undefined, 'normal'); doc.text(client.name, 20, 122); if(client.whatsapp) doc.text('Tel: ' + client.whatsapp, 20, 129); if(clientEmail) doc.text('Email: ' + clientEmail, 20, 136); if(clientAddress){let addrLines = doc.splitTextToSize(clientAddress, 90); doc.text(addrLines, 20, 143);} let y = 165; doc.setFillColor(37, 99, 235); doc.rect(20, y, 170, 8, 'F'); doc.setTextColor(255, 255, 255); doc.setFont(undefined, 'bold'); doc.text('#', 23, y+6); doc.text('DESCRIPTION', 35, y+6); doc.text('AMOUNT', 170, y+6); doc.setTextColor(0); y += 12; doc.setFont(undefined, 'normal'); items.forEach((it, idx)=>{doc.text(String(idx+1), 23, y); let descLines = doc.splitTextToSize(it.desc, 120); doc.text(descLines, 35, y); doc.text('R' + it.price.toFixed(2), 170, y); y += descLines.length * 5 + 3; doc.line(20, y, 190, y); y += 5;}); y += 5; 140, y); doc.text('R' + subtotal, 170, y); y += 7; if(parseFloat(discount) > 0){doc.setTextColor(220, 38, 38); doc.text('Discount:', 140, y); doc.text('-R' + discount, 170, y); doc.setTextColor(0); y += 7;} if(useVAT){doc.text('VAT 15%:', 140, y); doc.text('R' + vat, 170, y); y += 7;} doc.setLineWidth(0.8); doc.line(140, y, 190, y); y += 5; doc.setFontSize(14); doc.setFont(undefined, 'bold'); doc.text('TOTAL DUE:', 140, y); doc.text('R' + total, 170, y); y += 20; if(notes){doc.setFontSize(10); doc.setFont(undefined, 'bold'); doc.text('NOTES / PAYMENT TERMS:', 20, y); doc.setFont(undefined, 'normal'); let noteLines = doc.splitTextToSize(notes, 170); doc.text(noteLines, 20, y+7);} doc.setFontSize(8); doc.setTextColor(100); doc.line(20, 280, 190, 280); doc.text('Thank you for choosing Twinz Cooperate Services Pty Ltd', 105, 287, {align:'center'}); let timestamp = new Date().getTime(); doc.save(invNum + (isPaid? '_PAID' : '') + '-' + timestamp + '.pdf');}
+
+  try {
+    const logoImg = await fetch(COMPANY.logo).then(r=>r.blob()).then(b=>new Promise(resolve=>{
+      let reader = new FileReader();
+      reader.onload = ()=>resolve(reader.result);
+      reader.readAsDataURL(b);
+    }));
+    doc.addImage(logoImg, 'JPEG', 164, 15, 25, 25);
+  } catch(e){}
+
+  if(isPaid){
+    doc.setFontSize(50);
+    doc.setTextColor(16, 185, 129);
+    doc.text('PAID', 65, 140, {angle: -30});
+    doc.setFontSize(11);
+    doc.text('Paid on: ' + new Date().toLocaleDateString('en-ZA'), 70, 155, {angle: -30});
+    doc.setTextColor(0);
+  }
+
+  doc.setFontSize(24);
+  doc.setFont(undefined, 'bold');
+  doc.text(useVAT? 'TAX INVOICE' : 'INVOICE', 20, 25);
+
+  doc.setDrawColor(37, 99, 235);
+  doc.setLineWidth(0.5);
+  doc.rect(20, 55, 90, 45);
+  doc.setFontSize(10);
+  doc.setFont(undefined, 'bold');
+  doc.text(COMPANY.name, 23, 62);
+  doc.setFont(undefined, 'normal');
+  doc.text(COMPANY.address, 23, 69);
+  doc.text('Email: ' + COMPANY.email, 23, 76);
+  doc.text('Tel: ' + COMPANY.phone, 23, 83);
+  if(useVAT) doc.text('VAT: ' + COMPANY.vat + ' | Reg: ' + COMPANY.reg, 23, 90);
+  doc.text('Bank: ' + COMPANY.bank + ' Acc: ' + COMPANY.acc, 23, 97);
+
+  doc.rect(120, 55, 70, 45);
+  doc.setFont(undefined, 'bold');
+  doc.text('INVOICE NO:', 123, 62);
+  doc.text('DATE:', 123, 69);
+  doc.text('DUE DATE:', 123, 76);
+  doc.setFont(undefined, 'normal');
+  doc.text(invNum, 160, 62);
+  let today = new Date();
+  let dueDate = new Date(today);
+  dueDate.setDate(today.getDate() + 7);
+  doc.text(today.toLocaleDateString('en-ZA'), 160, 69);
+  doc.text(dueDate.toLocaleDateString('en-ZA'), 160, 76);
+
+  doc.setFontSize(11);
+doc.setFont(undefined, 'bold');
+doc.text('BILL TO:', 20, 115);
+doc.setFont(undefined, 'normal');
+doc.text(client.name, 20, 122);
+if(client.whatsapp) doc.text('Tel: ' + client.whatsapp, 20, 129); // ADD THIS LINE
+if(clientEmail) doc.text('Email: ' + clientEmail, 20, 136); // changed 129→136
+if(clientAddress){
+  let addrLines = doc.splitTextToSize(clientAddress, 90);
+  doc.text(addrLines, 20, 143); // changed 136→143
+}
+
+  let y = 165;
+  doc.setFillColor(37, 99, 235);
+  doc.rect(20, y, 170, 8, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont(undefined, 'bold');
+  doc.text('#', 23, y+6);
+  doc.text('DESCRIPTION', 35, y+6);
+  doc.text('AMOUNT', 170, y+6);
+  doc.setTextColor(0);
+  y += 12;
+
+  doc.setFont(undefined, 'normal');
+  items.forEach((it, idx)=>{
+    doc.text(String(idx+1), 23, y);
+    let descLines = doc.splitTextToSize(it.desc, 120);
+    doc.text(descLines, 35, y);
+    doc.text('R' + it.price.toFixed(2), 170, y);
+    y += descLines.length * 5 + 3;
+    doc.line(20, y, 190, y);
+    y += 5;
+  });
+
+  y += 5;
+  doc.text('Subtotal:', 140, y);
+  doc.text('R' + subtotal, 170, y);
+  y += 7;
+
+  if(parseFloat(discount) > 0){
+    doc.setTextColor(220, 38, 38);
+    doc.text('Discount:', 140, y);
+    doc.text('-R' + discount, 170, y);
+    doc.setTextColor(0);
+    y += 7;
+  }
+
+  if(useVAT){
+    doc.text('VAT 15%:', 140, y);
+    doc.text('R' + vat, 170, y);
+    y += 7;
+  }
+
+  doc.setLineWidth(0.8);
+  doc.line(140, y, 190, y);
+  y += 5;
+  doc.setFontSize(14);
+  doc.setFont(undefined, 'bold');
+  doc.text('TOTAL DUE:', 140, y);
+  doc.text('R' + total, 170, y);
+
+  y += 20;
+  if(notes){
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'bold');
+    doc.text('NOTES / PAYMENT TERMS:', 20, y);
+    doc.setFont(undefined, 'normal');
+    let noteLines = doc.splitTextToSize(notes, 170);
+    doc.text(noteLines, 20, y+7);
+  }
+
+  doc.setFontSize(8);
+  doc.setTextColor(100);
+  doc.line(20, 280, 190, 280);
+  doc.text('Thank you for choosing Twinz Cooperate Services Pty Ltd', 105, 287, {align:'center'});
+
+  let timestamp = new Date().getTime();
+doc.save(invNum + (isPaid ? '_PAID' : '') + '-' + timestamp + '.pdf');
+}
 
 function loadInvoices(){
   let html = '';
@@ -476,10 +708,18 @@ async function markPaid(id){
 async function sendPaidInvoice(invId){
   const inv = invoices.find(i=>i.id==invId);
   const client = clients.find(c=>c.id==inv.clientId);
+
   await createInvoicePDF(inv.num, client, inv.clientEmail, inv.clientAddress, inv.items, inv.subtotal, inv.discount, inv.vat, inv.total, inv.useVAT, inv.notes, true);
-  let waNum = client.whatsapp? client.whatsapp.replace(/\D/g,'') : '';
+
+  // FIX: Convert SA number 071... to 2771... for wa.me
+  let waNum = client.whatsapp ? client.whatsapp.replace(/\D/g,'') : '';
   if(waNum.startsWith('0')) waNum = '27' + waNum.slice(1);
-  if(!waNum){alert('Client WhatsApp number missing! Add number in Edit Client'); return;}
+  
+  if(!waNum){
+    alert('Client WhatsApp number missing! Add number in Edit Client');
+    return;
+  }
+
   let msg = `Hi ${client.name},\n\nPAID INVOICE ${inv.num} from Twinz Cooperate.\nTotal: R${inv.total} - PAID\nThank you for your payment!`;
   window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`);
 }
@@ -516,7 +756,8 @@ function loadReports(){
   const ctx = document.getElementById('revenueChart');
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const data = months.map(m=>{
-    return invoices.filter(i=>new Date(i.date).toLocaleString('en', {month:'short'})===m && i.status==='paid').reduce((a,b)=>a+b.total,0);
+    return invoices.filter(i=>new Date(i.date).toLocaleString('en', {month:'short'})===m && i.status==='paid')
+.reduce((a,b)=>a+b.total,0);
   });
   new Chart(ctx, {type:'bar', data:{labels:months, datasets:[{label:'Revenue R', data, backgroundColor:'#3b82f6', borderRadius:8}]}, options:{responsive:true, maintainAspectRatio:false}});
 }
@@ -542,10 +783,6 @@ async function uploadProof(){
     await db.collection('twinz_invoices').doc(invId).update({proofUrl: url, status:'pending'});
     alert('Proof uploaded! We will verify and confirm payment.');
   }
-}
-
-function viewProof(url){
-  window.open(url, '_blank');
 }
 </script>
 </body>
