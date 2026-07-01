@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Twinz Cooperate - GOD TIER v2.4.6</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- CHANGE 1: Removed user-scalable=no -->
+<title>Twinz Cooperate - GOD TIER v2.4.6-FRESH</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script> <!-- CHANGE 2: ADDED AUTH -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -18,7 +20,7 @@ h2{font-size:18px;margin-bottom:14px;color:#e5e7eb}
 .logo{width:48px;height:48px;border-radius:12px;object-fit:cover;border:2px solid #3b82f6}
 .sub{color:#9ca3af;font-size:13px;margin-bottom:18px}
 input,textarea,select{width:100%;padding:13px;border-radius:10px;border:1px solid #374151;background:#0a0a0a;color:#f1f5f9;margin-bottom:11px;font-size:16px}
-button{background:#2563eb;color:white;border:none;padding:15px 22px;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;transition:0.2s;width:100%}
+button{background:#2563eb;color:white;border:none;padding:15px 22px;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;transition:0.2s;width:100%;touch-action: manipulation;} /* CHANGE 3: Mobile click */
 button:active{transform:scale(0.97);background:#1d4ed8}
 .btn-green{background:#16a34a}.btn-red{background:#dc2626}.btn-yellow{background:#ca8a04}.btn-purple{background:#7c3aed}.btn-blue{background:#0ea5e9}.btn-cyan{background:#06b6d4}.btn-gray{background:#4b5563}
 .grid{display:grid;grid-template-columns:2fr 1fr;gap:12px}
@@ -36,7 +38,7 @@ button:active{transform:scale(0.97);background:#1d4ed8}
 .status-overdue{border-left-color:#dc2626}
 .status-pending{border-left-color:#ca8a04}
 .tabs{display:flex;gap:8px;margin-bottom:18px;overflow-x:auto}
-.tab{flex:1;min-width:110px;padding:11px;text-align:center;background:#1f2937;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px}
+.tab{flex:1;min-width:110px;padding:11px;text-align:center;background:#1f2937;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px;touch-action: manipulation;} /* CHANGE 3 */
 .tab.active{background:#2563eb}
 .hidden{display:none}
 .total-box{background:#1e3a8a;padding:16px;border-radius:12px;margin-top:12px}
@@ -62,11 +64,28 @@ input:checked +.slider:before{transform:translateX(24px)}
 .filter-bar input{flex:1}
 .filter-bar select{width:140px}
 @media(max-width:650px){.grid,.grid-3{grid-template-columns:1fr}}
+.logout-btn{background:#dc2626;width:auto;padding:10px 16px;font-size:13px;margin-left:auto} /* CHANGE 4 */
+.top-bar{display:flex;align-items:center;margin-bottom:18px} /* CHANGE 4 */
 </style>
 </head>
 <body>
 
+<!-- CHANGE 4: ADDED LOGIN SCREEN -->
+<div id="loginScreen" class="card">
+  <h1><img src="https://files.catbox.moe/0zympr.jpeg" class="logo"> Twinz Admin</h1>
+  <div class="sub">Login to access GOD TIER backend</div>
+  <input type="email" id="email" placeholder="twinz.cooperate.services@gmail.com" value="twinz.cooperate.services@gmail.com">
+  <input type="password" id="password" placeholder="Password">
+  <button id="loginBtn" class="btn-green">Login</button>
+  <div id="loginError" style="color:#dc2626;margin-top:8px;font-size:13px"></div>
+</div>
+
+<!-- YOUR ORIGINAL CODE STARTS HERE -->
+<div id="appScreen" class="hidden">
+<div class="top-bar"> <!-- CHANGE 4 -->
 <h1><img src="https://files.catbox.moe/0zympr.jpeg" class="logo"> Twinz Cooperate ⚡ GOD TIER</h1>
+<button id="logoutBtn" class="logout-btn">Logout</button> <!-- CHANGE 4 -->
+</div>
 <div class="sub">IT Solutions & Web Development | VAT: 9819040198</div>
 
 <div class="tabs">
@@ -216,19 +235,40 @@ input:checked +.slider:before{transform:translateX(24px)}
     <button class="btn-blue" onclick="closeModal()">Cancel</button>
   </div>
 </div>
+</div> <!-- END APP SCREEN -->
 
 <script>
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "XXX",
-  appId: "YOUR_APP_ID"
+const firebaseConfig = { // CHANGE 5: YOUR REAL KEYS
+  apiKey: "AIzaSyBJP71gaIqvJi2QZSJBIWEMMzda2jhcpW8",
+  authDomain: "twinz-app-and-web-specialist.firebaseapp.com",
+  projectId: "twinz-app-and-web-specialist",
+  storageBucket: "twinz-app-and-web-specialist.firebasestorage.app",
+  messagingSenderId: "457882091771",
+  appId: "1:457882091771:web:9e6b54ca264c6c2803f05e"
 };
 firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth(); // CHANGE 5
 const db = firebase.firestore();
 const storage = firebase.storage();
+
+// CHANGE 5: LOGIN GATE
+const loginScreen = document.getElementById('loginScreen');
+const appScreen = document.getElementById('appScreen');
+auth.onAuthStateChanged(user => {
+  if(user){
+    loginScreen.classList.add('hidden');
+    appScreen.classList.remove('hidden');
+  } else {
+    loginScreen.classList.remove('hidden');
+    appScreen.classList.add('hidden');
+  }
+});
+document.getElementById('loginBtn').addEventListener('click', async ()=>{
+  loginError.textContent='Logging in...';
+  try{await auth.signInWithEmailAndPassword(email.value, password.value);}catch(e){loginError.textContent=e.code;}
+});
+document.getElementById('logoutBtn').addEventListener('click', ()=>auth.signOut());
+// END CHANGE 5
 
 let itemCount = 1;
 let clients = [];
@@ -590,8 +630,8 @@ async function createInvoicePDF(invNum, client, clientEmail, clientAddress, item
   doc.setFont(undefined, 'bold');
   doc.text('INVOICE NO:', 123, 62);
   doc.text('DATE:', 123, 69);
-  doc.text('DUE DATE:', 123, 76);
-  doc.setFont(undefined, 'normal');
+  doc.text('DUE DATE:', 123, 76
+        doc.setFont(undefined, 'normal');
   doc.text(invNum, 160, 62);
   let today = new Date();
   let dueDate = new Date(today);
@@ -600,16 +640,16 @@ async function createInvoicePDF(invNum, client, clientEmail, clientAddress, item
   doc.text(dueDate.toLocaleDateString('en-ZA'), 160, 76);
 
   doc.setFontSize(11);
-doc.setFont(undefined, 'bold');
-doc.text('BILL TO:', 20, 115);
-doc.setFont(undefined, 'normal');
-doc.text(client.name, 20, 122);
-if(client.whatsapp) doc.text('Tel: ' + client.whatsapp, 20, 129); // ADD THIS LINE
-if(clientEmail) doc.text('Email: ' + clientEmail, 20, 136); // changed 129→136
-if(clientAddress){
-  let addrLines = doc.splitTextToSize(clientAddress, 90);
-  doc.text(addrLines, 20, 143); // changed 136→143
-}
+  doc.setFont(undefined, 'bold');
+  doc.text('BILL TO:', 20, 115);
+  doc.setFont(undefined, 'normal');
+  doc.text(client.name, 20, 122);
+  if(client.whatsapp) doc.text('Tel: ' + client.whatsapp, 20, 129);
+  if(clientEmail) doc.text('Email: ' + clientEmail, 20, 136);
+  if(clientAddress){
+    let addrLines = doc.splitTextToSize(clientAddress, 90);
+    doc.text(addrLines, 20, 143);
+  }
 
   let y = 165;
   doc.setFillColor(37, 99, 235);
@@ -676,7 +716,7 @@ if(clientAddress){
   doc.text('Thank you for choosing Twinz Cooperate Services Pty Ltd', 105, 287, {align:'center'});
 
   let timestamp = new Date().getTime();
-doc.save(invNum + (isPaid ? '_PAID' : '') + '-' + timestamp + '.pdf');
+  doc.save(invNum + (isPaid? '_PAID' : '') + '-' + timestamp + '.pdf');
 }
 
 function loadInvoices(){
@@ -711,10 +751,9 @@ async function sendPaidInvoice(invId){
 
   await createInvoicePDF(inv.num, client, inv.clientEmail, inv.clientAddress, inv.items, inv.subtotal, inv.discount, inv.vat, inv.total, inv.useVAT, inv.notes, true);
 
-  // FIX: Convert SA number 071... to 2771... for wa.me
-  let waNum = client.whatsapp ? client.whatsapp.replace(/\D/g,'') : '';
+  let waNum = client.whatsapp? client.whatsapp.replace(/\D/g,'') : '';
   if(waNum.startsWith('0')) waNum = '27' + waNum.slice(1);
-  
+
   if(!waNum){
     alert('Client WhatsApp number missing! Add number in Edit Client');
     return;
@@ -784,6 +823,10 @@ async function uploadProof(){
     alert('Proof uploaded! We will verify and confirm payment.');
   }
 }
+
+function viewProof(url){
+  window.open(url, '_blank');
+}
 </script>
 </body>
-</html>
+</html>     
