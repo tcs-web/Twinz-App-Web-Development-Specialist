@@ -226,7 +226,7 @@ async function login(){
   alert('Login clicked'); // <-- add this
   const email = document.getElementById('email').value;
   const pass = document.getElementById('password').value;
-  document.getElementById('loginError').textContent = 'Logging in...'; // <-- add this
+  document.getElementById('loginError').textContent = e.code + ': ' + e.message; // <-- BUG HERE
   try{
     await auth.signInWithEmailAndPassword(email, pass);
   }catch(e){
