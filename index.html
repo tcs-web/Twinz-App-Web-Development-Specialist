@@ -3,45 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Twinz V3.0.0</title>
+<title>Twinz V3.1.0-FULL</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <style>
-body{background:#0a0a0a;color:#f1f5f9;font-family:sans-serif;padding:16px;max-width:1000px;margin:0 auto}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{background:#0a0a0a;color:#f1f5f9;padding:16px;max-width:1000px;margin:0 auto}
 .card{background:#111827;border-radius:18px;padding:22px;margin-bottom:18px;border:1px solid #1f2937}
-input,button{width:100%;padding:15px;border-radius:12px;border:1px solid #374151;background:#0a0a0a;color:#f1f5f9;font-size:16px;margin-bottom:10px}
+h1{display:flex;align-items:center;gap:12px;color:#3b82f6}
+.logo{width:48px;height:48px;border-radius:12px;border:2px solid #3b82f6}
+input,textarea,select,button{width:100%;padding:13px;border-radius:10px;border:1px solid #374151;background:#0a0a0a;color:#f1f5f9;margin-bottom:11px;font-size:16px}
 button{background:#2563eb;font-weight:700;cursor:pointer;touch-action: manipulation;}
-.btn-green{background:#16a34a}.hidden{display:none}.logo{width:48px;height:48px;border-radius:12px}
-.tabs{display:flex;gap:8px}.tab{flex:1;padding:11px;background:#1f2937;border-radius:10px;text-align:center;cursor:pointer;touch-action: manipulation;}
+.btn-green{background:#16a34a}.btn-red{background:#dc2626}.btn-yellow{background:#ca8a04}.btn-blue{background:#0ea5e9}
+.hidden{display:none}.tabs{display:flex;gap:8px}.tab{flex:1;padding:11px;background:#1f2937;border-radius:10px;text-align:center;cursor:pointer;touch-action: manipulation;}
 .tab.active{background:#2563eb}
+.client-folder{background:#0f172a;border:1px solid #334155;border-radius:12px;padding:14px;margin-bottom:12px}
+.total-box{background:#1e3a8a;padding:16px;border-radius:12px;margin-top:12px}
+.logout-btn{background:#dc2626;width:auto;padding:10px 16px;font-size:13px;margin-left:auto}
+.top-bar{display:flex;align-items:center;margin-bottom:18px}
 </style>
 </head>
 <body>
 
 <div id="login" class="card">
-  <h1><img src="https://files.catbox.moe/0zympr.jpeg" class="logo"> Twinz Login</h1>
+  <h1><img src="https://files.catbox.moe/0zympr.jpeg" class="logo"> Twinz Admin</h1>
   <input type="email" id="email" value="twinz.cooperate.services@gmail.com">
   <input type="password" id="pass" placeholder="Password">
   <button id="loginBtn" class="btn-green">Login</button>
-  <div id="err" style="color:#dc2626;font-weight:700"></div>
+  <div id="err" style="color:#dc2626;font-weight:700;margin-top:8px"></div>
 </div>
 
 <div id="app" class="hidden">
-  <h1><img src="https://files.catbox.moe/0zympr.jpeg" class="logo"> Twinz V3.0.0</h1>
-  <button id="logoutBtn" style="background:#dc2626;width:auto">Logout</button>
-  <div class="tabs">
-    <div class="tab active" onclick="show('dash')">Dashboard</div>
-    <div class="tab" onclick="show('inv')">Invoices</div>
-  </div>
-  <div id="dash" class="card">Dashboard Ready. Add your V2.4.6 modules here.</div>
-  <div id="inv" class="card hidden">Invoice Module Ready.</div>
+<div class="top-bar"><h1><img src="https://files.catbox.moe/0zympr.jpeg" class="logo"> Twinz V3.1.0</h1><button id="logoutBtn" class="logout-btn">Logout</button></div>
+
+<div class="tabs">
+  <div class="tab active" onclick="show('clients')">Clients</div>
+  <div class="tab" onclick="show('inv')">New Invoice</div>
+  <div class="tab" onclick="show('list')">Invoices</div>
+</div>
+
+<div id="clients" class="card">
+  <h2>Client Cloud Folders</h2>
+  <button class="btn-yellow" onclick="addClient()">+ Add Client</button>
+  <div id="clientList"></div>
+</div>
+
+<div id="inv" class="card hidden">
+  <h2>Create Invoice</h2>
+  <select id="clientSelect"><option>Select Client...</option></select>
+  <input id="clientEmail" placeholder="Client Email">
+  <textarea id="clientAddress" rows="2" placeholder="Address"></textarea>
+  <label><input type="checkbox" id="vatToggle" checked onchange="calc()"> VAT 15%</label>
+  <div id="items"><div style="display:grid;grid-template-columns:2fr 1fr;gap:10px"><input placeholder="Service" id="item0"><input type="number" placeholder="Amount R" id="price0" oninput="calc()"></div></div>
+  <button onclick="addItem()">+ Add Item</button>
+  <input type="number" id="discount" value="0" placeholder="Discount R" oninput="calc()">
+  <div class="total-box">Total: R<span id="total">0.00</span></div>
+  <button class="btn-green" onclick="genInvoice()">Generate PDF + WhatsApp</button>
+</div>
+
+<div id="list" class="card hidden"><h2>All Invoices</h2><div id="invoiceList"></div></div>
+
 </div>
 
 <script>
-// PASTE YOUR 6 KEYS HERE FROM STEP 1.6
+// PASTE YOUR 6 KEYS HERE
 const firebaseConfig = {
   apiKey: "AIzaSyBJP71gaIqvJi2QZSJBIWEMMzda2jhcpW8",
   authDomain: "twinz-app-and-web-specialist.firebaseapp.com",
@@ -51,13 +79,24 @@ const firebaseConfig = {
   appId: "1:457882091771:web:9e6b54ca264c6c2803f05e"
 };
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+const auth = firebase.auth(); const db = firebase.firestore(); const storage = firebase.storage();
 
-auth.onAuthStateChanged(u => {if(u){login.classList.add('hidden'); app.classList.remove('hidden');}else{login.classList.remove('hidden'); app.classList.add('hidden');}});
-loginBtn.onclick = async ()=>{err.textContent='Logging in...'; try{await auth.signInWithEmailAndPassword(email.value.trim(), pass.value);}catch(e){err.textContent='ERROR: '+e.code;}};
-logoutBtn.onclick = ()=>auth.signOut();
-function show(id){document.querySelectorAll('#app>.card').forEach(c=>c.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); event.target.classList.add('active');}
+let clients=[],invoices=[],itemCount=1;
+const COMPANY={name:'Twinz Cooperate',email:'twinz.cooperate.services@gmail.com',phone:'068 254 7352',vat:'9819040198',bank:'Standard Bank',acc:'10 26 459 443 4',logo:'https://files.catbox.moe/0zympr.jpeg'};
+
+auth.onAuthStateChanged(u=>{if(u){login.classList.add('hidden');app.classList.remove('hidden');loadData();}else{login.classList.remove('hidden');app.classList.add('hidden');}});
+loginBtn.onclick=async()=>{err.textContent='...';try{await auth.signInWithEmailAndPassword(email.value.trim(),pass.value)}catch(e){err.textContent='ERROR: '+e.code}};
+logoutBtn.onclick=()=>auth.signOut();
+function show(id){document.querySelectorAll('#app>.card').forEach(c=>c.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));event.target.classList.add('active');}
+
+function loadData(){db.collection('twinz_clients').onSnapshot(s=>{clients=s.docs.map(d=>({id:d.id,...d.data()}));renderClients();loadSelect();}); db.collection('twinz_invoices').onSnapshot(s=>{invoices=s.docs.map(d=>({id:d.id,...d.data()}));renderInvoices();});}
+async function addClient(){let n=prompt('Name:'),w=prompt('WhatsApp +27:'),e=prompt('Email:'),a=prompt('Address:');if(n&&w)await db.collection('twinz_clients').add({name:n,whatsapp:w,email:e,address:a,portalId:Math.random().toString(36).substr(2,9)});}
+function renderClients(){clientList.innerHTML=clients.map(c=>`<div class="client-folder"><h3>${c.name}</h3><div>${c.whatsapp} | ${c.email}</div></div>`).join('')||'<div>No clients</div>';}
+function loadSelect(){clientSelect.innerHTML='<option>Select Client...</option>'+clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');}
+function addItem(){items.insertAdjacentHTML('beforeend',`<div style="display:grid;grid-template-columns:2fr 1fr;gap:10px"><input placeholder="Service" id="item${itemCount}"><input type="number" placeholder="Amount R" id="price${itemCount}" oninput="calc()"></div>`);itemCount++;}
+function calc(){let s=0;for(let i=0;i<itemCount;i++)s+=parseFloat(document.getElementById('price'+i)?.value||0);let d=parseFloat(discount.value||0);let v=document.getElementById('vatToggle').checked?(s-d)*0.15:0;total.textContent=(s-d+v).toFixed(2);}
+async function genInvoice(){let cid=clientSelect.value;if(!cid)return alert('Select client');let c=clients.find(x=>x.id==cid);let num='TCS-'+Date.now();await db.collection('twinz_invoices').add({num,clientId:cid,clientName:c.name,total:parseFloat(total.textContent),status:'unpaid',date:new Date().toISOString()});alert('Invoice '+num+' Created');}
+function renderInvoices(){invoiceList.innerHTML=invoices.map(i=>`<div class="client-folder">${i.num} - ${i.clientName} | R${i.total} | ${i.status}</div>`).join('')||'<div>No invoices</div>';}
 </script>
 </body>
 </html>
