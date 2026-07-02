@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Twinz V3.3.0</title>
+<title>Twinz V3.4.0</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -37,9 +37,12 @@ button{background:#2563eb;font-weight:700;cursor:pointer;touch-action: manipulat
 .client-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
 .client-actions button{padding:8px 12px;font-size:13px;width:auto}
 .grid{display:grid;grid-template-columns:2fr 1fr;gap:12px}
-.inv-row{display:flex;justify-content:space-between;align-items:center;padding:14px;background:#0a0a0a;border-radius:10px;margin-bottom:10px;border-left:4px solid #2563eb}
+.inv-row{display:flex;justify-content:space-between;align-items:center;padding:14px;background:#0a0a0a;border-radius:10px;margin-bottom:10px;border-left:4px solid #2563eb;gap:10px}
+.inv-info{flex:1}
 .status-paid{border-left-color:#16a34a}
 .hint{font-size:11px;color:#fbbf24;margin-top:-8px;margin-bottom:8px}
+.inv-actions{display:flex;gap:6px}
+.inv-actions button{width:auto;padding:8px 12px;font-size:12px}
 </style>
 </head>
 <body>
@@ -53,7 +56,7 @@ button{background:#2563eb;font-weight:700;cursor:pointer;touch-action: manipulat
 </div>
 
 <div id="app" class="hidden">
-<div class="top-bar"><h1><img src="https://files.catbox.moe/0zympr.jpeg" class="logo"> Twinz V3.3.0</h1><button id="logoutBtn" class="logout-btn">Logout</button></div>
+<div class="top-bar"><h1><img src="https://files.catbox.moe/0zympr.jpeg" class="logo"> Twinz V3.4.0</h1><button id="logoutBtn" class="logout-btn">Logout</button></div>
 <div class="sub">IT Solutions & Web Development | VAT: 9819040198</div>
 
 <div class="tabs">
@@ -130,13 +133,7 @@ loginBtn.onclick=async()=>{err.textContent='Logging in...';try{await auth.signIn
 logoutBtn.onclick=()=>auth.signOut();
 function show(id){document.querySelectorAll('#app>.card').forEach(c=>c.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));event.target.classList.add('active');}
 
-// FIX: CONVERT SA NUMBER TO +27 FOR WHATSAPP
-function formatSA(wa){ 
-  let num = wa.replace(/\D/g,''); // remove spaces + 
-  if(num.startsWith('0')) num = '27' + num.slice(1); // 072 -> 2772
-  if(num.startsWith('27')) return num; // already good
-  return num; // fallback
-}
+function formatSA(wa){ let num = wa.replace(/\D/g,''); if(num.startsWith('0')) num = '27' + num.slice(1); if(num.startsWith('27')) return num; return num; }
 
 function loadData(){db.collection('twinz_clients').onSnapshot(s=>{clients=s.docs.map(d=>({id:d.id,...d.data()}));renderClients();loadSelect();}); db.collection('twinz_invoices').onSnapshot(s=>{invoices=s.docs.map(d=>({id:d.id,...d.data()}));renderInvoices();});}
 async function addClient(){let n=prompt('Client Company Name:'),w=prompt('Client WhatsApp +27 or 07...'),e=prompt('Client Email:'),a=prompt('Client Address:');if(n&&w)await db.collection('twinz_clients').add({name:n,whatsapp:w,email:e,address:a,appLink:'',websiteLink:'',portalId:Math.random().toString(36).substr(2,9)});}
@@ -152,21 +149,24 @@ function calc(){let s=0;for(let i=0;i<itemCount;i++)s+=parseFloat(document.getEl
 async function genInvoice(){
   let cid=clientSelect.value;if(!cid)return alert('Select client first'); 
   let c=clients.find(x=>x.id==cid); 
-  let phone = clientPhone.value || c.whatsapp; // FIX 1: Use manual input
+  let phone = clientPhone.value || c.whatsapp; 
   if(!phone) return alert('Enter Client Number');
   let num='TCS-'+new Date().getFullYear()+'-'+String(invoices.length+1).padStart(4,'0'); 
   let itemsArr=[]; for(let i=0;i<itemCount;i++){let desc=document.getElementById('item'+i)?.value; let price=document.getElementById('price'+i)?.value; if(desc&&price)itemsArr.push({desc,price:parseFloat(price)});} 
-  await createPDF(num,c,clientEmail.value,clientAddress.value,phone,itemsArr,subtotal.textContent,discount.value,vat.textContent,total.textContent,vatToggle.checked,notes.value,false); 
+  await createPDF(num,c,clientEmail.value,clientAddress.value,phone,itemsArr,subtotal.textContent,discount.value,vat.textContent,total.textContent,vatToggle.checked,notes.value,false); // FIX: AUTO DOWNLOAD HERE
   await db.collection('twinz_invoices').add({num,clientId:cid,clientName:c.name,clientPhone:phone,items:itemsArr,subtotal:parseFloat(subtotal.textContent),discount:parseFloat(discount.value),vat:parseFloat(vat.textContent),total:parseFloat(total.textContent),useVAT:vatToggle.checked,notes:notes.value,status:'unpaid',date:new Date().toISOString()}); 
-  let waNum = formatSA(phone); // FIX 2: Auto convert 072 -> 2772
+  let waNum = formatSA(phone); 
   let msg=`Hi ${c.name},\n\n${vatToggle.checked?'TAX INVOICE':'INVOICE'} ${num}\nTotal: R${total.textContent}\nThank you!`; 
   window.open(`https://wa.me/${waNum}/?text=${encodeURIComponent(msg)}`); 
-  alert('PDF Generated + WhatsApp Opened for +'+waNum);
+  alert('PDF Downloaded + WhatsApp Opened for +'+waNum);
 }
 
-// FIX 3: ADDED PHONE TO PDF
-async function createPDF(invNum,client,clientEmail,clientAddress,clientPhone,items,subtotal,discount,vat,total,useVAT,notes,isPaid){const { jsPDF }=window.jspdf; const doc=new jsPDF(); try{const logoImg=await fetch(COMPANY.logo).then(r=>r.blob()).then(b=>new Promise(r=>{let rd=new FileReader();rd.onload=()=>r(rd.result);rd.readAsDataURL(b);}));doc.addImage(logoImg,'JPEG',164,15,25,25);}catch(e){} if(isPaid){doc.setFontSize(50);doc.setTextColor(16,185,129);doc.text('PAID',65,140,{angle:-30});doc.setFontSize(11);doc.text('Paid on: '+new Date().toLocaleDateString('en-ZA'),70,155,{angle:-30});doc.setTextColor(0);} doc.setFontSize(24);doc.setFont(undefined,'bold');doc.text(useVAT?'TAX INVOICE':'INVOICE',20,25); doc.setDrawColor(37,99,235);doc.setLineWidth(0.5);doc.rect(20,55,90,45);doc.setFontSize(10);doc.setFont(undefined,'bold');doc.text(COMPANY.name,23,62);doc.setFont(undefined,'normal');doc.text(COMPANY.address,23,69);doc.text('Email: '+COMPANY.email,23,76);doc.text('Tel: '+COMPANY.phone,23,83);if(useVAT)doc.text('VAT: '+COMPANY.vat+' | Reg: '+COMPANY.reg,23,90);doc.text('Bank: '+COMPANY.bank+' Acc: '+COMPANY.acc,23,97);doc.rect(120,55,70,45);doc.setFont(undefined,'bold');doc.text('INVOICE NO:',123,62);doc.text('DATE:',123,69);doc.text('DUE DATE:',123,76);doc.setFont(undefined,'normal');doc.text(invNum,160,62);let today=new Date();let due=new Date(today);due.setDate(today.getDate()+7);doc.text(today.toLocaleDateString('en-ZA'),160,69);doc.text(due.toLocaleDateString('en-ZA'),160,76); doc.setFontSize(11);doc.setFont(undefined,'bold');doc.text('BILL TO:',20,115);doc.setFont(undefined,'normal');doc.text(client.name,20,122);if(clientPhone)doc.text('Tel: '+clientPhone,20,129); if(clientEmail)doc.text('Email: '+clientEmail,20,136);if(clientAddress){let addr=doc.splitTextToSize(clientAddress,90);doc.text(addr,20,143);} let y=165;doc.setFillColor(37,99,235);doc.rect(20,y,170,8,'F');doc.setTextColor(255,255,255);doc.setFont(undefined,'bold');doc.text('#',23,y+6);doc.text('DESCRIPTION',35,y+6);doc.text('AMOUNT',170,y+6);doc.setTextColor(0);y+=12;doc.setFont(undefined,'normal');items.forEach((it,idx)=>{doc.text(String(idx+1),23,y);let d=doc.splitTextToSize(it.desc,120);doc.text(d,35,y);doc.text('R'+it.price.toFixed(2),170,y);y+=d.length*5+3;doc.line(20,y,190,y);y+=5;}); y+=5;doc.text('Subtotal:',140,y);doc.text('R'+subtotal,170,y);y+=7;if(parseFloat(discount)>0){doc.setTextColor(220,38,38);doc.text('Discount:',140,y);doc.text('-R'+discount,170,y);doc.setTextColor(0);y+=7;} if(useVAT){doc.text('VAT 15%:',140,y);doc.text('R'+vat,170,y);y+=7;} doc.setLineWidth(0.8);doc.line(140,y,190,y);y+=5;doc.setFontSize(14);doc.setFont(undefined,'bold');doc.text('TOTAL DUE:',140,y);doc.text('R'+total,170,y); y+=20;if(notes){doc.setFontSize(10);doc.setFont(undefined,'bold');doc.text('NOTES / PAYMENT TERMS:',20,y);doc.setFont(undefined,'normal');let n=doc.splitTextToSize(notes,170);doc.text(n,20,y+7);} doc.setFontSize(8);doc.setTextColor(100);doc.line(20,280,190,280);doc.text('Thank you for choosing '+COMPANY.name,105,287,{align:'center'}); doc.save(invNum+(isPaid?'_PAID':'')+'-'+Date.now()+'.pdf');}
-function renderInvoices(){invoiceList.innerHTML=invoices.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(i=>`<div class="inv-row ${i.status==='paid'?'status-paid':''}"><div>${i.num} - ${i.clientName}<br><small style="color:#9ca3af">${i.clientPhone||''} | R${i.total} | ${new Date(i.date).toLocaleDateString('en-ZA')} | ${i.status}</small></div></div>`).join('')||'<div>No invoices yet</div>';}
+async function createPDF(invNum,client,clientEmail,clientAddress,clientPhone,items,subtotal,discount,vat,total,useVAT,notes,isPaid){const { jsPDF }=window.jspdf; const doc=new jsPDF(); try{const logoImg=await fetch(COMPANY.logo).then(r=>r.blob()).then(b=>new Promise(r=>{let rd=new FileReader();rd.onload=()=>r(rd.result);rd.readAsDataURL(b);}));doc.addImage(logoImg,'JPEG',164,15,25,25);}catch(e){} if(isPaid){doc.setFontSize(50);doc.setTextColor(16,185,129);doc.text('PAID',65,140,{angle:-30});doc.setFontSize(11);doc.text('Paid on: '+new Date().toLocaleDateString('en-ZA'),70,155,{angle:-30});doc.setTextColor(0);} doc.setFontSize(24);doc.setFont(undefined,'bold');doc.text(useVAT?'TAX INVOICE':'INVOICE',20,25); doc.setDrawColor(37,99,235);doc.setLineWidth(0.5);doc.rect(20,55,90,45);doc.setFontSize(10);doc.setFont(undefined,'bold');doc.text(COMPANY.name,23,62);doc.setFont(undefined,'normal');doc.text(COMPANY.address,23,69);doc.text('Email: '+COMPANY.email,23,76);doc.text('Tel: '+COMPANY.phone,23,83);if(useVAT)doc.text('VAT: '+COMPANY.vat+' | Reg: '+COMPANY.reg,23,90);doc.text('Bank: '+COMPANY.bank+' Acc: '+COMPANY.acc,23,97);doc.rect(120,55,70,45);doc.setFont(undefined,'bold');doc.text('INVOICE NO:',123,62);doc.text('DATE:',123,69);doc.text('DUE DATE:',123,76);doc.setFont(undefined,'normal');doc.text(invNum,160,62);let today=new Date();let due=new Date(today);due.setDate(today.getDate()+7);doc.text(today.toLocaleDateString('en-ZA'),160,69);doc.text(due.toLocaleDateString('en-ZA'),160,76); doc.setFontSize(11);doc.setFont(undefined,'bold');doc.text('BILL TO:',20,115);doc.setFont(undefined,'normal');doc.text(client.name,20,122);if(clientPhone)doc.text('Tel: '+clientPhone,20,129); if(clientEmail)doc.text('Email: '+clientEmail,20,136);if(clientAddress){let addr=doc.splitTextToSize(clientAddress,90);doc.text(addr,20,143);} let y=165;doc.setFillColor(37,99,235);doc.rect(20,y,170,8,'F');doc.setTextColor(255,255,255);doc.setFont(undefined,'bold');doc.text('#',23,y+6);doc.text('DESCRIPTION',35,y+6);doc.text('AMOUNT',170,y+6);doc.setTextColor(0);y+=12;doc.setFont(undefined,'normal');items.forEach((it,idx)=>{doc.text(String(idx+1),23,y);let d=doc.splitTextToSize(it.desc,120);doc.text(d,35,y);doc.text('R'+it.price.toFixed(2),170,y);y+=d.length*5+3;doc.line(20,y,190,y);y+=5;}); y+=5;doc.text('Subtotal:',140,y);doc.text('R'+subtotal,170,y);y+=7;if(parseFloat(discount)>0){doc.setTextColor(220,38,38);doc.text('Discount:',140,y);doc.text('-R'+discount,170,y);doc.setTextColor(0);y+=7;} if(useVAT){doc.text('VAT 15%:',140,y);doc.text('R'+vat,170,y);y+=7;} doc.setLineWidth(0.8);doc.line(140,y,190,y);y+=5;doc.setFontSize(14);doc.setFont(undefined,'bold');doc.text('TOTAL DUE:',140,y);doc.text('R'+total,170,y); y+=20;if(notes){doc.setFontSize(10);doc.setFont(undefined,'bold');doc.text('NOTES / PAYMENT TERMS:',20,y);doc.setFont(undefined,'normal');let n=doc.splitTextToSize(notes,170);doc.text(n,20,y+7);} doc.setFontSize(8);doc.setTextColor(100);doc.line(20,280,190,280);doc.text('Thank you for choosing '+COMPANY.name,105,287,{align:'center'}); doc.save(invNum+'-'+client.name.replace(/\s/g,'_')+'.pdf');} // FIX: FORCE DOWNLOAD
+
+// FIX: DELETE INVOICE BUTTON
+async function deleteInvoice(id){if(confirm('Delete this invoice permanently?')){await db.collection('twinz_invoices').doc(id).delete();}}
+
+function renderInvoices(){invoiceList.innerHTML=invoices.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(i=>`<div class="inv-row ${i.status==='paid'?'status-paid':''}"><div class="inv-info">${i.num} - ${i.clientName}<br><small style="color:#9ca3af">${i.clientPhone||''} | R${i.total} | ${new Date(i.date).toLocaleDateString('en-ZA')} | ${i.status}</small></div><div class="inv-actions"><button class="btn-red" onclick="deleteInvoice('${i.id}')">Delete</button></div></div>`).join('')||'<div>No invoices yet</div>';}
 </script>
 </body>
 </html>
